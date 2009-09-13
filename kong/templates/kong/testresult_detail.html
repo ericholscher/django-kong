@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="sites">
+<div class="site">
+<h3> {{ results.0.site.shortname }} </h3>
+{% for result in results %}
+<p class="{% if forloop.last %}last{% endif %}{% if forloop.first %} first{% endif %}">
+  <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{{ result.site.url }}" title="{{ result.site.url }}">
+    <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
+    <small><em>{{ result.test.name }}</em> run at {{ result.run_date|date:"g:iA"|lower }}</small>
+    </a>
+</p>
+
+{% endfor %}
+
+</div>
+</div>
+
+{% endblock %}

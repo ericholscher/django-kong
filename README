@@ -1,0 +1,5 @@
+This project is an interesting combination that work together to solve two problems. The main problem is deployment testing and custom monitoring. It allows you to define a twill test that allows you to test all of the sites you deploy against. These tests could also be used for a monitoring purpose, and run every so often by a system like Nagios.
+
+Along the way of solving these problems, I found the need to model Django sites and server configurations. This will probably be eventually abstracted out into it's own app, but for now it allows you to do some interesting things with access to your sites.
+
+At the moment this is mostly just worksforme code abstracted a bit and thrown online. It will be improved over time, and made nicer, but for now It Works (tm).

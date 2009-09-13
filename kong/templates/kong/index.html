@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %} Latest Results {% endblock %}
+
+{% block content %}
+
+{% regroup results by site.shortname as grouped_list %}
+
+<div class="sites">
+  {% for group in grouped_list %}
+  <div class="site">
+    <h3> {{ group.grouper }} </h3>
+    {% for result in group.list %}
+    {{ result.name }}
+    <p class="{% if forloop.last %}last{% endif %}{% if forloop.first %} first{% endif %}">
+      <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{% url kong_testresult_detail result.test.slug %}" title="{{ result.site.url }}">
+        <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
+        <small><em>{{ result.test.name }}</em> run at {{ result.run_date|date:"g:iA"|lower }}</small>
+      </a>
+    </p>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
