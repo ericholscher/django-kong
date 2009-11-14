@@ -8,10 +8,13 @@ from django.template.context import RequestContext
 from django.views.generic import list_detail
 
 def index(request):
-    ret_val = []
+    ret_val = {}
     for site in Site.objects.all():
         results = get_latest_results(site)
-        ret_val.extend(results)
+        if ret_val.has_key(site.slug):
+            ret_val[site.slug].extend(results)
+        else:
+            ret_val[site.slug] = results
 
     return render_to_response('kong/index.html',
                        {'results': ret_val},

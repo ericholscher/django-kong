@@ -26,6 +26,7 @@ class TestAdmin(admin.ModelAdmin):
     save_as = True
 
 class HostedSiteAdmin(SiteAdmin):
+    list_display = ('servername', 'slug', 'type', 'client')
     prepopulated_fields = {"slug": ("name",)}
 
 class ServerAdmin(admin.ModelAdmin):
