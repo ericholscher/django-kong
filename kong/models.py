@@ -59,8 +59,8 @@ class HostedSite(Site):
     wsgi_processes = models.IntegerField(default=5)
     wsgi_max_requests = models.IntegerField(default=500)
     serveradmin = models.CharField(max_length=100, default="example@example.com")
-    mediaserver = models.CharField(max_length=100)
-    servername = models.CharField(max_length=100)
+    mediaserver = models.CharField(max_length=100, default='media.example.com')
+    servername = models.CharField(max_length=100, default='example.com')
 
     def __unicode__(self):
         return self.servername

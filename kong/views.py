@@ -43,6 +43,14 @@ def test_object(request, test_slug):
                        {'results': tests },
                        context_instance=RequestContext(request))
 
+def testresult_detail(request, id):
+    test = TestResult.objects.get(id=id)
+    template = test.test.render(test.site)
+    return render_to_response('kong/testresult_detail.html',
+                       {'result': test,
+                        'template': template, },
+                       context_instance=RequestContext(request))
+
 def type_list(request):
     qs = Type.objects.all()
     return list_detail.object_list(request, qs)

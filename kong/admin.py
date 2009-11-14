@@ -26,7 +26,7 @@ class TestAdmin(admin.ModelAdmin):
     save_as = True
 
 class HostedSiteAdmin(SiteAdmin):
-    pass
+    prepopulated_fields = {"slug": ("name",)}
 
 class ServerAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
