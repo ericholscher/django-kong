@@ -10,10 +10,8 @@ def get_latest_results(site):
     ret_val = []
     tests = Test.objects.filter(sites=site) | Test.objects.filter(types=site.type)
     for test in tests:
-        results = test.test_results.filter(site=site)
-        if results:
-            latest_result = results[0]
-            ret_val.append(latest_result)
+        result = test.test_results.filter(site=site)[0]
+        ret_val.append(result)
     return ret_val
 
 def execute_test(site, test):
