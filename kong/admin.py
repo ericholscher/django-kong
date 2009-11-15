@@ -2,6 +2,7 @@ from django.contrib import admin
 from kong.models import Test, TestResult, Client, HostedSite, Server, DeployTarget, Type
 
 class TestResultAdmin(admin.ModelAdmin):
+    search_fields = ('content', 'site__slug')
     list_filter = ('succeeded',)
     list_display = ('test', 'site', 'run_date', 'succeeded')
 
@@ -22,10 +23,12 @@ class SiteAdmin(admin.ModelAdmin):
     list_filter = ('is_live',)
 
 class TestAdmin(admin.ModelAdmin):
+    search_fields = ('site', 'test')
     prepopulated_fields = {"slug": ("name",)}
     save_as = True
 
 class HostedSiteAdmin(SiteAdmin):
+    search_fields = ('servername',)
     list_display = ('servername', 'slug', 'type', 'client')
     prepopulated_fields = {"slug": ("name",)}
 
@@ -33,6 +36,7 @@ class ServerAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 class TypeAdmin(admin.ModelAdmin):
+    search_fields = ('slug', 'name')
     prepopulated_fields = {"slug": ("name",)}
     inlines = [
         HostedSiteInline,
