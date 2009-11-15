@@ -26,6 +26,9 @@ class Command(BaseCommand):
                     help="Print all options"),
     )
 
+    def complete(self):
+        return [(h.slug, 0) for h in HostedSite.objects.all()]
+
     def handle(self, *args, **options):
         LIST = options.get('list')
         if LIST:
