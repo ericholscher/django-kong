@@ -1,32 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1> {{ results.0.test }} </h1>
+<h2> {{ results.0.site.slug }} </h2>
 <div class="sites">
-{% for result in results %}
-<div class="site">
-<h3> {{ result.test }} </h3>
-<h3> {{ result.site.name }} </h3>
-  <font color="{{ result.succeeded|yesno:"green,red" }}" title="{{ result.site.url }}">
-    <center>{{ result.succeeded|yesno:"PASSED,FAILED" }}</center>
-    </font>
-    <h3>run at {{ result.run_date|date:"g:iA"|lower }}</h3>
-    <h3>Duration {{ result.duration }}</h3>
-    <hr>
-{% if result.content %}
-<h3> Content </h3>
+    {% for result in results %}
+    <div class="site">
+        <p>
+            <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
+                <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
+                <small>run at {{ result.run_date|date:"g:iA"|lower }}</small>
+                <small>Duration {{ result.duration }}</small>
+            </a>
+        </p>
+        {% if result.content %}
+        <h3> Content </h3>
 <pre>
 {{ result.content }}
 </pre>
-</p>
 {% endif %}
-<p>
-<h3> Code Executed </h3>
+<p> 
+<a> 
+<strong> Code Executed </strong>
 <pre>
 {{ result.test.body|urlize }}
 </pre>
+</a>
 </p>
 </div>
 {% endfor %}
 </div>
 
 {% endblock %}
+
