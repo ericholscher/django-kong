@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load kong_tags %}
 <h1> {{ results.0.test }} </h1>
 <h2> {{ results.0.site.slug }} </h2>
 <div class="sites">
@@ -10,7 +11,7 @@
             <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
                 <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
                 <small>run at {{ result.run_date|date:"g:iA"|lower }}</small>
-                <small>Duration {{ result.duration }}</small>
+                <small>Duration (ms) {{ result.duration|micro_to_milli }}</small>
             </a>
         </p>
         {% if result.content %}
@@ -19,14 +20,10 @@
 {{ result.content }}
 </pre>
 {% endif %}
-<p> 
-<a> 
-<strong> Code Executed </strong>
+<p> <a> <strong> Code Executed </strong> </a> </p>
 <pre>
-{{ result.test.body|urlize }}
+{{ result|render_twill|urlize }}
 </pre>
-</a>
-</p>
 </div>
 {% endfor %}
 </div>
