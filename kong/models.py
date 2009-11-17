@@ -29,8 +29,9 @@ class Site(models.Model):
     type = models.ForeignKey('Type', related_name='sites')
     client = models.ForeignKey(Client, related_name='sites', blank=True, null=True)
 
-    settings = models.CharField(max_length=80, blank=True)
-    pythonpath = models.CharField(max_length=255, default="/home/code", blank=True, null=True)
+    settings = models.CharField(max_length=80)
+    pythonpath = models.CharField(max_length=255,
+                                  default="/home/code.django-1.0")
     #aliases = models.ForeignKey('Alias')
     is_live = models.BooleanField(default=False)
 
@@ -54,13 +55,14 @@ class Site(models.Model):
 
 
 class HostedSite(Site):
+    servername = models.CharField(max_length=100, default='example.com',
+                                  help_text='This is the address of your actual site')
     on_servers = models.ManyToManyField('Server', null=True, blank=True, related_name="sites")
-    maxclients = models.IntegerField(default=30)
-    wsgi_processes = models.IntegerField(default=5)
-    wsgi_max_requests = models.IntegerField(default=500)
-    serveradmin = models.CharField(max_length=100, default="example@example.com")
-    mediaserver = models.CharField(max_length=100, default='media.example.com')
-    servername = models.CharField(max_length=100, default='example.com')
+    maxclients = models.IntegerField(default=30, null=True, blank=True)
+    wsgi_processes = models.IntegerField(default=5, null=True, blank=True)
+    wsgi_max_requests = models.IntegerField(default=500, null=True, blank=True)
+    serveradmin = models.CharField(max_length=100, null=True, blank=True)
+    mediaserver = models.CharField(max_length=100, null=True, blank=True)
 
     def __unicode__(self):
         return self.servername
