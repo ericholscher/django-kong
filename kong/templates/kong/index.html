@@ -11,9 +11,10 @@
     {% for result in testresults %}
     {{ result.name }}
     <p class="{% if forloop.last %}last{% endif %}{% if forloop.first %} first{% endif %}">
-      <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{% url kong_testresult_detail result.id %}" title="{{ result.site.url }}">
+      <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{% url kong_testresult_for_site result.test.slug result.site.slug %}" title="{{ result.site.url }}">
         <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
         <small><em>{{ result.test.name }}</em> run at {{ result.run_date|date:"g:iA"|lower }}</small>
+        <small>Duration (ms): {{ result.duration }}</small>
       </a>
     </p>
     {% endfor %}

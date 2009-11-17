@@ -1,3 +1,5 @@
+import datetime
+
 from kong.models import Test, TestResult
 from twill.parse import execute_string
 from twill.errors import TwillAssertionError
@@ -15,6 +17,7 @@ def get_latest_results(site):
     return ret_val
 
 def execute_test(site, test):
+    now = datetime.datetime.now()
     print "trying %s on %s" % (test, site)
     twill_script = test.render(site)
     content = ''
@@ -25,9 +28,14 @@ def execute_test(site, test):
         succeeded = False
         content = str(e)
 
+    end = datetime.datetime.now()
+    duration = end - now
+    duration = duration.microseconds
+
     TestResult.objects.create(site=site,
                               test=test,
                               succeeded=succeeded,
+                              duration=duration,
                               content=content)
     return succeeded
 

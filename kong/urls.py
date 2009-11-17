@@ -14,6 +14,7 @@ urlpatterns = patterns('',
      url(r'^sites/', 'kong.views.site_list', name='kong_site_list'),
 
      url(r'^tests/(?P<id>\d+)/', 'kong.views.testresult_detail', name='kong_testresult_detail'),
+     url(r'^tests/(?P<test_slug>.*?)/(?P<site_slug>.*?)/', 'kong.views.test_object_for_site', name='kong_testresult_for_site'),
      url(r'^tests/(?P<test_slug>.*?)/', 'kong.views.test_object', name='kong_test_list'),
      url(r'^tests/', 'kong.views.test_list', name='kong_testresult_list'),
 

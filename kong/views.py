@@ -46,6 +46,14 @@ def test_object(request, test_slug):
                        {'results': tests },
                        context_instance=RequestContext(request))
 
+def test_object_for_site(request, test_slug, site_slug):
+    test = Test.objects.get(slug=test_slug)
+    site = Site.objects.get(slug=site_slug)
+    tests = TestResult.objects.filter(test=test, site=site)[:15]
+    return render_to_response('kong/testresult_for_site.html',
+                       {'results': tests },
+                       context_instance=RequestContext(request))
+
 def testresult_detail(request, id):
     test = TestResult.objects.get(id=id)
     template = test.test.render(test.site)
