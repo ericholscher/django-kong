@@ -3,6 +3,7 @@
 {% block title %} Latest Results {% endblock %}
 
 {% block content %}
+{% load kong_tags %}
 
 <div class="sites">
   {% for site_slug, testresults in results.items %}
@@ -14,7 +15,7 @@
       <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{% url kong_testresult_for_site result.test.slug result.site.slug %}" title="{{ result.site.url }}">
         <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
         <small><em>{{ result.test.name }}</em> run at {{ result.run_date|date:"g:iA"|lower }}</small>
-        <small>Duration (ms): {{ result.duration }}</small>
+        <small>Duration (ms): {{ result.duration|micro_to_milli }}</small>
       </a>
     </p>
     {% endfor %}
