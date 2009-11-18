@@ -3,6 +3,7 @@ from django.template import Template, Context
 from django.db.models import permalink
 from django.contrib.localflavor.us import models as USmodels
 import datetime
+import urlparse
 
 #(HACK) http://code.djangoproject.com/ticket/897
 class ManyToManyField_NoSyncdb(models.ManyToManyField):
@@ -45,7 +46,7 @@ class Site(models.Model):
     @property
     def url(self):
         curr_site = self.hostedsite.servername
-        if curr_site.find('http://') == -1:
+        if urlparse.urlsplit(curr_site).scheme == '': 
             curr_site = "http://%s" % curr_site
         return curr_site
 
