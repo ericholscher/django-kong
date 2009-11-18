@@ -27,9 +27,8 @@ def execute_test(site, test):
         execute_string(twill_script)
         succeeded = True
     except Exception, e:
-        if hasattr(settings, 'KONG_MAIL_MANAGERS):
-            mail_managers('Test Failed', 'Your test: %s for site: %s has
-                          failed" % (test, site)
+        if hasattr(settings, 'KONG_MAIL_MANAGERS'):
+            mail_managers('Test Failed', 'Your test: %s for site: %s has failed' % (test, site))
         succeeded = False
         content = str(e)
 
