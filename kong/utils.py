@@ -1,4 +1,6 @@
 import datetime
+from django.conf import settings
+from django.core.mail import mail_managers
 
 from kong.models import Test, TestResult
 from twill.parse import execute_string
@@ -25,6 +27,8 @@ def execute_test(site, test):
         execute_string(twill_script)
         succeeded = True
     except Exception, e:
+        if hasattr(settings, 'KONG_MAIL_MANAGERS'):
+            mail_managers('Test Failed', 'Your test: %s for site: %s has failed' % (test, site))
         succeeded = False
         content = str(e)
 

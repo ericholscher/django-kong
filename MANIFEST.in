@@ -1,0 +1,2 @@
+include LICENSE
+recursive-include kong/templates *.html
