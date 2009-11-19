@@ -107,7 +107,7 @@ class Test(models.Model):
         return self.name
 
     def render(self, site):
-        return Template(self.body).render(Context({'site': site})).encode()
+        return Template(self.body).render(Context({'site': site, 'test': self})).encode()
 
     @permalink
     def get_absolute_url(self):
