@@ -14,8 +14,12 @@ def get_latest_results(site):
     ret_val = []
     tests = Test.objects.filter(sites=site) | Test.objects.filter(types=site.type)
     for test in tests:
-        result = test.test_results.filter(site=site)[0]
-        ret_val.append(result)
+        try:
+            result = test.test_results.filter(site=site)[0]
+            ret_val.append(result)
+        except IndexError:
+            #No result for test
+            pass
     return ret_val
 
 def execute_test(site, test):
