@@ -1,10 +1,14 @@
 import datetime
 from django.conf import settings
 from django.core.mail import mail_managers
+from django.template.loader import render_to_string
+from django.contrib.sites.models import Site
 
 from kong.models import Test, TestResult
 from twill.parse import execute_string
 from twill.errors import TwillAssertionError
+
+SITE = Site.objects.get_current()
 
 def get_latest_results(site):
     """
@@ -31,10 +35,14 @@ def execute_test(site, test):
         execute_string(twill_script)
         succeeded = True
     except Exception, e:
-        if hasattr(settings, 'KONG_MAIL_MANAGERS'):
-            mail_managers('Test Failed', 'Your test: %s for site: %s has failed' % (test, site))
         succeeded = False
         content = str(e)
+        if hasattr(settings, 'KONG_MAIL_MANAGERS'):
+            message = render_to_string('kong/failed_email.txt', {'site': site,
+                                                                 'test': test,
+                                                                 'error': content,
+                                                                 'url': SITE.domain})
+            mail_managers('Kong Test Failed', message)
 
     end = datetime.datetime.now()
     duration = end - now
