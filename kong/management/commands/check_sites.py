@@ -54,4 +54,4 @@ class Command(BaseCommand):
         if passed:
             return 0
         else:
-            return 1
+            return 2
