@@ -1,6 +1,6 @@
 import datetime
 from django.conf import settings
-from django.core.mail import mail_managers
+from django.core.mail import mail_managers, mail_admins
 from django.template.loader import render_to_string
 from django.contrib.sites.models import Site
 
@@ -37,12 +37,14 @@ def execute_test(site, test):
     except Exception, e:
         succeeded = False
         content = str(e)
+        message = render_to_string('kong/failed_email.txt', {'site': site,
+                                                             'test': test,
+                                                             'error': content,
+                                                             'url': SITE.domain})
         if hasattr(settings, 'KONG_MAIL_MANAGERS'):
-            message = render_to_string('kong/failed_email.txt', {'site': site,
-                                                                 'test': test,
-                                                                 'error': content,
-                                                                 'url': SITE.domain})
             mail_managers('Kong Test Failed', message)
+        if hasattr(settings, 'KONG_MAIL_ADMINS'):
+            mail_admins('Kong Test Failed', message)
 
     end = datetime.datetime.now()
     duration = end - now
