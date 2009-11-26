@@ -6,51 +6,57 @@ Results for {{ results.0.test }}
 
 {% block content %}
 {% load kong_tags %}
-<div id="placeholder" style="position:relative; width:640px; height:280px;">
-<script type="text/javascript">
-$(function () {
-        $.plot($("#placeholder"), [
-            {
-                label: '{{ results.0.test }}',
-                data: {{ flot_list }},
-                points: { show: true },
-                lines: { show: true },
-                /*
-                xaxis: {
-                    mode: "time",
-                },
-                */
-            }
-            ]);
-});
+{% with results.0 as result %}
+<h1> {{ result.test }} </h1>
+{% if result.site.name %}
+<h2> {{ result.site.name }} </h2>
+{% else %}
+<h2> {{ result.site.slug }} </h2>
+{% endif %}
 
-</script>
-</div>
-<h1> {{ results.0.test }} </h1>
-<h2> {{ results.0.site.slug }} </h2>
 <div class="sites">
-    {% for result in results %}
-    <div class="site">
-        <p>
-            <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
-                <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
-                <small>run at {{ result.run_date|date:"g:iA"|lower }}</small>
-                <small>Duration (ms) {{ result.duration|micro_to_milli }}</small>
-            </a>
-        </p>
-        {% if result.content %}
-        <h3> Content </h3>
+<div class="site">
+    <p>
+        <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
+            <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
+            <small>run at {{ result.run_date|date:"g:iA"|lower }}</small>
+            <small>Duration (ms) {{ result.duration|micro_to_milli }}</small>
+        </a>
+    </p>
+{% if result.content %}
+<div class="test-content">
+<strong> Content </strong>
 <pre>
 {{ result.content }}
 </pre>
+</div>
 {% endif %}
-<p> <a> <strong> Code Executed </strong> </a> </p>
+<div class="executed">
+<strong> Code Executed </strong>
 <pre>
 {{ result|render_twill|urlize }}
 </pre>
 </div>
-{% endfor %}
+<center><strong> Duration </strong></center>
+<div id="placeholder" style="position:relative; width:640px; height:280px;"> </div>
 </div>
+</div>
+
+
+<script type="text/javascript">
+$(function () {
+        $.plot($("#placeholder"),[{{ flot_list }}], 
+            {
+                label: '{{ results.0.test }}',
+                points: { show: true },
+                lines: { show: true },
+                xaxis: {
+                    mode: "time",
+                },
+            }
+            );
+});
+</script>
 
 {% comment %}
 {% load charts %}
@@ -67,6 +73,6 @@ $(function () {
 {% endchart %}
 {% endcomment %}
 
-
+{% endwith %}
 {% endblock %}
 
