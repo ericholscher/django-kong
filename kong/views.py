@@ -9,9 +9,9 @@ from django.views.generic import list_detail
 import calendar
 
 def get_timestamp(time):
-    return calendar.timegm(time.timetuple()) / 100
+    #return calendar.timegm(time.timetuple()) / 100
     #Need this for flot timestamps..
-    #return calendar.timegm(time.timetuple()) * 1000
+    return calendar.timegm(time.timetuple()) * 1000
 
 def index(request):
     ret_val = {}
@@ -23,7 +23,7 @@ def index(request):
         else:
             ret_val[site.slug] = results
     for result in results:
-        results = list(TestResult.objects.filter(test=result.test, site=result.site)[:15])
+        results = list(TestResult.objects.filter(test=result.test, site=result.site)[:50])
         results.reverse()
         flot_val[result.test.slug] = [[get_timestamp(result.run_date), result.duration/1000] for result in results]
 
@@ -35,7 +35,7 @@ def index(request):
 def test_object_for_site(request, test_slug, site_slug):
     test = Test.objects.get(slug=test_slug)
     site = Site.objects.get(slug=site_slug)
-    tests = TestResult.objects.filter(test=test, site=site)[:15]
+    tests = TestResult.objects.filter(test=test, site=site)[:50]
     duration_tests = list(tests)
     duration_tests.reverse()
     duration_list = [result.duration for result in duration_tests]
