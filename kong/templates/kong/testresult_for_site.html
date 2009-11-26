@@ -1,7 +1,31 @@
 {% extends "base.html" %}
 
+{% block title %}
+Results for {{ results.0.test }}
+{% endblock %}
+
 {% block content %}
 {% load kong_tags %}
+<div id="placeholder" style="position:relative; width:640px; height:280px;">
+<script type="text/javascript">
+$(function () {
+        $.plot($("#placeholder"), [
+            {
+                label: '{{ results.0.test }}',
+                data: {{ flot_list }},
+                points: { show: true },
+                lines: { show: true },
+                /*
+                xaxis: {
+                    mode: "time",
+                },
+                */
+            }
+            ]);
+});
+
+</script>
+</div>
 <h1> {{ results.0.test }} </h1>
 <h2> {{ results.0.site.slug }} </h2>
 <div class="sites">
@@ -27,6 +51,22 @@
 </div>
 {% endfor %}
 </div>
+
+{% comment %}
+{% load charts %}
+{% chart %}
+  {% chart-size "600x400" %}
+  {% chart-type "line" %}
+  {% chart-title "Duration over time" 18 "cc0000" %}
+  {% chart-data duration_list %}
+  {% axis "left" %}
+    {% axis-range "0" "1" %}
+  {% endaxis %}
+
+  {% chart-range-marker "h" "000000" 1 .997 %}
+{% endchart %}
+{% endcomment %}
+
 
 {% endblock %}
 
