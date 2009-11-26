@@ -25,7 +25,7 @@ def index(request):
     for result in results:
         results = list(TestResult.objects.filter(test=result.test, site=result.site)[:50])
         results.reverse()
-        flot_val[result.test.slug] = [[get_timestamp(result.run_date), result.duration/1000] for result in results]
+        flot_val["%s-%s" % (result.site.slug, result.test.slug)] = [[get_timestamp(result.run_date), result.duration/1000] for result in results]
 
     return render_to_response('kong/index.html',
                        {'results': ret_val,
