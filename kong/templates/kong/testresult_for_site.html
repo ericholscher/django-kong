@@ -1,32 +1,154 @@
 {% extends "base.html" %}
 
+{% block title %}
+Results for {{ results.0.test }}
+{% endblock %}
+
 {% block content %}
 {% load kong_tags %}
-<h1> {{ results.0.test }} </h1>
-<h2> {{ results.0.site.slug }} </h2>
+{% with results.0 as result %}
+<h1> {{ result.test }} </h1>
+{% if result.site.name %}
+<h2> {{ result.site.name }} </h2>
+{% else %}
+<h2> {{ result.site.slug }} </h2>
+{% endif %}
+
 <div class="sites">
-    {% for result in results %}
-    <div class="site">
-        <p>
-            <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
-                <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
-                <small>run at {{ result.run_date|date:"g:iA"|lower }}</small>
-                <small>Duration (ms) {{ result.duration|micro_to_milli }}</small>
-            </a>
-        </p>
-        {% if result.content %}
-        <h3> Content </h3>
+<div class="site">
+    <p>
+        <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
+            <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
+            <small>run at {{ result.run_date|date:"g:iA"|lower }}</small>
+            <small>Duration (ms) {{ result.duration|micro_to_milli }}</small>
+        </a>
+    </p>
+{% if result.content %}
+<div class="test-content">
+<strong> Content </strong>
 <pre>
 {{ result.content }}
 </pre>
+</div>
 {% endif %}
-<p> <a> <strong> Code Executed </strong> </a> </p>
+<div class="executed">
+<strong> Code Executed </strong>
 <pre>
 {{ result|render_twill|urlize }}
 </pre>
 </div>
-{% endfor %}
+<center><strong> Duration </strong></center>
+<div id="placeholder" style="position:relative; width:640px; height:280px;"> </div>
+<div id="overview" style="margin-left:50px;margin-top:20px;width:400px;height:50px"></div>
+
+</div>
 </div>
 
+
+<script type="text/javascript">
+$(function () {
+    var data = [ {{ flot_list }} ]
+
+    var options = {
+        label: '{{ result.test.name }}',
+        points: { show: true },
+        lines: { show: true },
+        xaxis: { mode: "time" },
+        selection: { mode: "x" },
+        grid: { hoverable: true, clickable: true },
+    };
+
+    var plot = $.plot($("#placeholder"), data , options );
+
+    var overview = $.plot($("#overview"), data, {
+        series: {
+            lines: { show: true, lineWidth: 1 },
+            shadowSize: 0
+        },
+        xaxis: { ticks: [], mode: "time" },
+        yaxis: { ticks: [], autoscaleMargin: 0.1 },
+        selection: { mode: "x" }
+    });
+    $("#placeholder").bind("plotselected", function (event, ranges) {
+        // do the zooming
+        plot = $.plot($("#placeholder"), data,
+                      $.extend(true, {}, options, {
+                          xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                      }));
+
+        // don't fire event on the overview to prevent eternal loop
+        overview.setSelection(ranges, true);
+    });
+
+    $("#overview").bind("plotselected", function (event, ranges) {
+        plot.setSelection(ranges);
+    });
+
+    function showTooltip(x, y, contents, id) {
+        $('<div id="' + id + '">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '2px',
+            'background-color': '#fee',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+
+    var previousPoint = null;
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+
+        if (item) {
+            if (previousPoint != item.datapoint) {
+                previousPoint = item.datapoint;
+
+                $("#tooltip").remove();
+                var x = item.datapoint[0].toFixed(2),
+                    y = item.datapoint[1].toFixed(2);
+
+                showTooltip(item.pageX, item.pageY, y, 'tooltip');
+            }
+        }
+        else {
+            $("#tooltip").remove();
+            previousPoint = null;
+        }
+    });
+
+    
+    // This would allow you to click a spot and have the 
+    // number stay, but it stays on zooming and looks odd.
+    /*
+    $("#placeholder").bind("plotclick", function (event, pos, item) {
+        if (item) {
+            plot.highlight(item.series, item.datapoint);
+            showTooltip(item.pageX, item.pageY, item.datapoint[1].toFixed(2), 'fancy');
+        }
+    });
+    */
+
+
+
+});
+</script>
+
+{% comment %}
+{% load charts %}
+{% chart %}
+  {% chart-size "600x400" %}
+  {% chart-type "line" %}
+  {% chart-title "Duration over time" 18 "cc0000" %}
+  {% chart-data duration_list %}
+  {% axis "left" %}
+    {% axis-range "0" "1" %}
+  {% endaxis %}
+
+  {% chart-range-marker "h" "000000" 1 .997 %}
+{% endchart %}
+{% endcomment %}
+
+{% endwith %}
 {% endblock %}
 
