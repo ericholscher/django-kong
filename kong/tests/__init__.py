@@ -11,7 +11,6 @@ class TwillTests(TestCase):
     """
     Test the twill execution model
     """
-    fixtures = ['test_data.json']
 
     def test_basic_twill_script(self):
         """
@@ -30,8 +29,10 @@ class TwillTests(TestCase):
         url_func = lambda url: 'http://example.com'
         TwillBrowser.get_url = url_func
 
-        test = Test.objects.all()[0]
+        test = Test.objects.create(
+            body="go awesome.com/\r\ncode 200\r\nfind Awesome",
+            name="My Awesome Test",
+            slug="my-awesome-test",
+        )
         passed = run_test(test)
         self.assertEqual(passed, True)
-
-
