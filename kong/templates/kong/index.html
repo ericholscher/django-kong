@@ -17,69 +17,10 @@
         <small><em>{{ result.test.name }}</em> run at {{ result.run_date|date:"g:iA"|lower }}</small>
         <small>Duration (ms): {{ result.duration|micro_to_milli }}</small>
       </a>
-      <div class="placeholder" id="placeholder-{{ result.site.slug }}-{{ result.test.slug }}" style="position:relative; width:200px; height:40px;"></div>
     </p>
     {% endfor %}
   </div>
   {% endfor %}
 </div>
-
-<script type="text/javascript">
-{% for site_test_slug, results in flot_list.items %}
-    $(function () {
-            var data = [{{ results }}]
-            var options = {
-                xaxis: {
-                    ticks: [],
-                    mode: "time"
-                },
-                yaxis: {
-                    ticks: []
-                },
-                grid: {
-                    color: "#fff",
-                    hoverable: true, 
-                    clickable: true
-                },
-            }
-
-            $.plot($("#placeholder-{{ site_test_slug }}"), data, options );
-    });
-{% endfor %}
-
-function showTooltip(x, y, contents, id) {
-    $('<div id="' + id + '">' + contents + '</div>').css( {
-        position: 'absolute',
-        display: 'none',
-        top: y + 5,
-        left: x + 5,
-        border: '1px solid #fdd',
-        padding: '2px',
-        'background-color': '#fee',
-        opacity: 0.80
-    }).appendTo("body").fadeIn(200);
-}
-
-var previousPoint = null;
-$(".placeholder").bind("plothover", function (event, pos, item) {
-
-    if (item) {
-        if (previousPoint != item.datapoint) {
-            previousPoint = item.datapoint;
-
-            $("#tooltip").remove();
-            var x = item.datapoint[0].toFixed(2),
-                y = item.datapoint[1].toFixed(2);
-
-            showTooltip(item.pageX, item.pageY, y, 'tooltip');
-        }
-    }
-    else {
-        $("#tooltip").remove();
-        previousPoint = null;
-    }
-});
-
-</script>
 
 {% endblock %}
