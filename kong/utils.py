@@ -8,7 +8,6 @@ from kong.models import Test, TestResult
 from twill.parse import execute_string
 from twill.errors import TwillAssertionError
 
-SITE = Site.objects.get_current()
 
 def get_latest_results(site):
     """
@@ -27,6 +26,7 @@ def get_latest_results(site):
     return ret_val
 
 def execute_test(site, test):
+    SITE = Site.objects.get_current()
     now = datetime.datetime.now()
     print "trying %s on %s" % (test, site)
     twill_script = test.render(site)
@@ -42,9 +42,9 @@ def execute_test(site, test):
                                                              'error': content,
                                                              'url': SITE.domain})
         if hasattr(settings, 'KONG_MAIL_MANAGERS'):
-            mail_managers('Kong Test Failed', message)
+            mail_managers('Kong Test Failed: %s (%s)' % (test, site), message)
         if hasattr(settings, 'KONG_MAIL_ADMINS'):
-            mail_admins('Kong Test Failed', message)
+            mail_admins('Kong Test Failed: %s (%s)' % (test, site), message)
 
     end = datetime.datetime.now()
     duration = end - now
