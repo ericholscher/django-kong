@@ -9,4 +9,8 @@ urlpatterns = patterns('',
      url(r'^$', 'kong.views.index', name='kong_index'),
      url(r'index/$', 'kong.views.index', name='kong_index'),
      url(r'^tests/(?P<test_slug>.*?)/(?P<site_slug>.*?)/', 'kong.views.test_object_for_site', name='kong_testresult_for_site'),
+     url(r'^sites/(?P<site>.*?)/', 'kong.views.site_object', name='kong_site_detail'),
+     url(r'^sites/', 'kong.views.site_list', name='kong_site_list'),
+
+
 )

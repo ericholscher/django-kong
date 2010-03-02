@@ -26,7 +26,6 @@ def index(request):
             results = list(TestResult.objects.filter(test=result.test, site=result.site)[:50])
             results.reverse()
             flot_val["%s-%s" % (result.site.slug, result.test.slug)] = [[get_timestamp(result.run_date), result.duration/1000] for result in results]
-
     return render_to_response('kong/index.html',
                        {'results': ret_val,
                         'flot_list': flot_val},
@@ -46,3 +45,24 @@ def test_object_for_site(request, test_slug, site_slug):
                         'flot_list': flot_list
                         },
                        context_instance=RequestContext(request))
+
+
+
+def site_list(request):
+    qs = Site.objects.all()
+    return list_detail.object_list(request, qs)
+
+def site_object(request, site):
+    ret_val = {}
+    sites = Site.objects.filter(slug=site)
+    for site in sites:
+        results = get_latest_results(site)
+        if ret_val.has_key(site.slug):
+            ret_val[site.slug].extend(results)
+        else:
+            ret_val[site.slug] = results
+
+    return render_to_response('kong/index.html',
+                       {'results': ret_val},
+                       context_instance=RequestContext(request))
+

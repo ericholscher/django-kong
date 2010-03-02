@@ -8,7 +8,7 @@
 <div class="sites">
   {% for site_slug, testresults in results.items %}
   <div class="site">
-    <h3> {{ site_slug }} </h3>
+  <h3> <a href="{% url kong_site_detail site_slug %}">{{ site_slug }}</a> </h3>
     {% for result in testresults %}
     {{ result.name }}
     <p class="{% if forloop.last %}last{% endif %}{% if forloop.first %} first{% endif %}">
