@@ -1,4 +1,7 @@
 import datetime
+import StringIO
+import sys
+
 from django.conf import settings
 from django.core.mail import mail_managers, mail_admins
 from django.template.loader import render_to_string
@@ -31,12 +34,16 @@ def execute_test(site, test):
     print "trying %s on %s" % (test, site)
     twill_script = test.render(site)
     content = ''
+    old_io = sys.stdout
+    new_io = StringIO.StringIO()
+    sys.stdout = new_io
     try:
         execute_string(twill_script)
         succeeded = True
+        content = new_io.getvalue().strip()
     except Exception, e:
         succeeded = False
-        content = str(e)
+        content = new_io.getvalue().strip() + "Exception:\n\n" + str(e)
         message = render_to_string('kong/failed_email.txt', {'site': site,
                                                              'test': test,
                                                              'error': content,
@@ -46,6 +53,7 @@ def execute_test(site, test):
         if hasattr(settings, 'KONG_MAIL_ADMINS'):
             mail_admins('Kong Test Failed: %s (%s)' % (test, site), message)
 
+    sys.stdout = old_io
     end = datetime.datetime.now()
     duration = end - now
     duration = duration.microseconds
