@@ -117,7 +117,7 @@ class Test(models.Model):
 class TestResult(models.Model):
     test = models.ForeignKey(Test, related_name='test_results')
     site = models.ForeignKey(Site, related_name='test_results')
-    run_date = models.DateTimeField(default=datetime.datetime.now)
+    run_date = models.DateTimeField(default=datetime.datetime.now, db_index=True)
     duration = models.IntegerField(null=True)
     succeeded = models.BooleanField()
     content = models.TextField()
