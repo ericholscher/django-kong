@@ -1,2 +1,3 @@
 include LICENSE
 recursive-include kong/templates *.html
+recursive-include kong/templates *.txt
