@@ -29,21 +29,26 @@ def get_latest_results(site):
     return ret_val
 
 def execute_test(site, test):
+    import twill.commands as commands
     SITE = Site.objects.get_current()
     now = datetime.datetime.now()
-    print "trying %s on %s" % (test, site)
+    #TODO: USE LOGGING
+    #Make mod_wsgi happy with no stdout...
+    #print "trying %s on %s" % (test, site)
     twill_script = test.render(site)
     content = ''
     old_io = sys.stdout
+    old_err = sys.stderr
     new_io = StringIO.StringIO()
     sys.stdout = new_io
+    commands.ERR = new_io
     try:
         execute_string(twill_script)
         succeeded = True
         content = new_io.getvalue().strip()
     except Exception, e:
         succeeded = False
-        content = new_io.getvalue().strip() + "Exception:\n\n" + str(e)
+        content = new_io.getvalue().strip() + "\n\nException:\n\n" + str(e)
         message = render_to_string('kong/failed_email.txt', {'site': site,
                                                              'test': test,
                                                              'error': content,
@@ -54,6 +59,7 @@ def execute_test(site, test):
             mail_admins('Kong Test Failed: %s (%s)' % (test, site), message)
 
     sys.stdout = old_io
+    commands.ERR = old_err
     end = datetime.datetime.now()
     duration = end - now
     duration = duration.microseconds

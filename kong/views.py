@@ -1,7 +1,7 @@
 # Create your views here.
 
 from kong.models import TestResult, Test
-from kong.utils import get_latest_results
+from kong.utils import get_latest_results, execute_test
 from kong.models import Site, Type, Server
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
@@ -46,6 +46,11 @@ def test_object_for_site(request, test_slug, site_slug):
                         },
                        context_instance=RequestContext(request))
 
+def run_test_on_site(request, test_slug, site_slug):
+    test = Test.objects.get(slug=test_slug)
+    site = Site.objects.get(slug=site_slug)
+    execute_test(site, test)
+    return test_object_for_site(request, test_slug, site_slug)
 
 
 def site_list(request):

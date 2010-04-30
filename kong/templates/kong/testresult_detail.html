@@ -5,6 +5,7 @@
 <div class="site">
 <h3> {{ result.test }} </h3>
 <h3> {{ result.site.name }} </h3>
+<h5> <a href="run/">Run This Test</a> </h5>
   <font color="{{ result.succeeded|yesno:"green,red" }}" title="{{ result.site.url }}">
     <center>{{ result.succeeded|yesno:"PASSED,FAILED" }}</center>
     </font>
