@@ -31,6 +31,21 @@ def index(request):
                         'flot_list': flot_val},
                        context_instance=RequestContext(request))
 
+def dashboard(request):
+    ret_val = {}
+    flot_val = {}
+    for site in Site.objects.all():
+        results = get_latest_results(site)
+        succ = True
+        for result in results:
+            if not result.succeeded:
+                succ = False
+                fail = result
+        ret_val[site.slug] = succ
+    return render_to_response('kong/dashboard.html',
+                       {'results': ret_val},
+                       context_instance=RequestContext(request))
+
 def test_object_for_site(request, test_slug, site_slug):
     test = Test.objects.get(slug=test_slug)
     site = Site.objects.get(slug=site_slug)

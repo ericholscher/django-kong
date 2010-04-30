@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %} Latest Results {% endblock %}
+
+{% block content %}
+{% load kong_tags %}
+
+<div class="sites">
+  {% for site_slug, succeeded in results.items %}
+  <div class="site">
+  <h3> <a href="{% url kong_site_detail site_slug %}">{{ site_slug }}</a> </h3>
+    <p class="first">
+    <a class="{{ succeeded|yesno:"passed,succeeded" }}" href="{% url kong_site_detail site_slug %}">
+        <strong>{{ succeeded|yesno:"PASSED,FAILED" }}</strong>
+      </a>
+    </p>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
