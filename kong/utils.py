@@ -18,7 +18,8 @@ def get_latest_results(site):
     defined for a site.
     """
     ret_val = []
-    for test in site.tests.all():
+    tests = Test.objects.filter(sites=site) | Test.objects.filter(types=site.type)
+    for test in tests:
         try:
             result = test.test_results.filter(site=site)[0]
             ret_val.append(result)
@@ -30,6 +31,7 @@ def get_latest_results(site):
 def execute_test(site, test):
     import twill.commands as commands
     SITE = Site.objects.get_current()
+    now = datetime.datetime.now()
     #TODO: USE LOGGING
     #Make mod_wsgi happy with no stdout...
     #print "trying %s on %s" % (test, site)
@@ -41,7 +43,6 @@ def execute_test(site, test):
     sys.stdout = new_io
     commands.ERR = new_io
     try:
-        now = datetime.datetime.now()
         execute_string(twill_script)
         succeeded = True
         content = new_io.getvalue().strip()
@@ -57,11 +58,11 @@ def execute_test(site, test):
         if hasattr(settings, 'KONG_MAIL_ADMINS'):
             mail_admins('Kong Test Failed: %s (%s)' % (test, site), message)
 
+    sys.stdout = old_io
+    commands.ERR = old_err
     end = datetime.datetime.now()
     duration = end - now
     duration = duration.microseconds
-    sys.stdout = old_io
-    commands.ERR = old_err
 
     TestResult.objects.create(site=site,
                               test=test,
@@ -94,7 +95,7 @@ def run_test_for_type(type, test):
     return all_passed
 
 def run_tests_for_site(site):
-    print "Running all tests for site: %s" % site
+    #print "Running all tests for site: %s" % site
     all_passed = True
     for test in site.tests.all():
         passed = execute_test(site, test)
@@ -113,7 +114,7 @@ def run_tests_for_box(box):
     return all_passed
 
 def run_test(test):
-    print "Running all tests for %s" % test
+    #print "Running all tests for %s" % test
     sites = test.sites.all()
     types = test.types.all()
     all_passed = True
