@@ -1,8 +1,10 @@
+import sys
+from optparse import OptionParser, make_option
+
 from django.core.management.base import BaseCommand
 from kong.models import Test
 from kong.models import Site, Type, Server
 from kong.utils import run_test, run_tests_for_type, run_tests_for_site, run_tests_for_box
-from optparse import OptionParser, make_option
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -28,7 +30,7 @@ class Command(BaseCommand):
 
         passed =  True
         if ALL:
-            print "Running tests for all sites and types"
+            #print "Running tests for all sites and types"
             all_passed = True
             for site in Site.objects.all():
                 passed = run_tests_for_site(site)
@@ -36,7 +38,6 @@ class Command(BaseCommand):
             for type in Type.objects.all():
                 passed = run_tests_for_type(type)
                 all_passed = passed and all_passed
-            return all_passed
         elif ALL_SITES:
             for site in Site.objects.all():
                 passed = run_tests_for_site(site)
@@ -74,6 +75,8 @@ class Command(BaseCommand):
             return 0
 
         if passed:
-            return 0
+            print "All Good"
+            sys.exit(0)
         else:
-            return 2
+            print "Tests Failed!"
+            sys.exit(2)
