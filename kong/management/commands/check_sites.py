@@ -45,19 +45,19 @@ class Command(BaseCommand):
             for type in Type.objects.all():
                 passed = run_tests_for_type(type)
         elif TEST:
-            print "Running test: %s" % TEST
+            #print "Running test: %s" % TEST
             test = Test.objects.get(slug=TEST)
             passed = run_test(test)
         elif TYPE:
-            print "Running tests for type : %s" % TYPE
+            #print "Running tests for type : %s" % TYPE
             type = Type.objects.get(slug=TYPE)
             passed = run_tests_for_type(type)
         elif SITE:
-            print "Running tests for site : %s" % SITE
+            #print "Running tests for site : %s" % SITE
             site = Site.objects.get(slug=SITE)
             passed = run_tests_for_site(site)
         elif BOX:
-            print "Running tests for box: %s" % BOX
+            #print "Running tests for box: %s" % BOX
             box = Server.objects.get(slug=BOX)
             passed = run_tests_for_box(box)
         elif LIST:
