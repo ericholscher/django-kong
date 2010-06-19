@@ -51,6 +51,3 @@ INSTALLED_APPS = (
     'kong',
 )
 
-#For mail config.
-from local_settings import *
-
