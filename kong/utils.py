@@ -18,7 +18,7 @@ def get_latest_results(site):
     defined for a site.
     """
     ret_val = []
-    for test in site.tests:
+    for test in site.tests.all():
         try:
             result = test.test_results.filter(site=site)[0]
             ret_val.append(result)

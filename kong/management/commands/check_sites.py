@@ -6,9 +6,9 @@ from optparse import OptionParser, make_option
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option("-a", "--all", dest="all"),
-        make_option("--all-sites", dest="all-sites"),
-        make_option("--all-types", dest="all-types"),
+        make_option("-a", "--all", dest="all", action="store_true"),
+        make_option("--all-sites", dest="all-sites", action="store_true"),
+        make_option("--all-types", dest="all-types", action="store_true"),
         make_option("-t", "--test", dest="test"),
         make_option("-s", "--site", dest="site"),
         make_option("-T", "--type", dest="type"),
