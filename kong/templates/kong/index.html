@@ -14,7 +14,7 @@
     <p class="{% if forloop.last %}last{% endif %}{% if forloop.first %} first{% endif %}">
       <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{% url kong_testresult_for_site result.test.slug result.site.slug %}" title="{{ result.site.url }}">
         <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
-        <small><em>{{ result.test.name }}</em> run at {{ result.run_date|date:"g:iA"|lower }}</small>
+        <small><em>{{ result.test.name }}</em> | {{ result.run_date|date:"g:iA"|lower }}</small>
         <small>Duration (ms): {{ result.duration|micro_to_milli }}</small>
       </a>
       <div class="placeholder" id="placeholder-{{ result.site.slug }}-{{ result.test.slug }}" style="position:relative; width:200px; height:40px;"></div>
@@ -83,3 +83,4 @@ $(".placeholder").bind("plothover", function (event, pos, item) {
 </script>
 
 {% endblock %}
+

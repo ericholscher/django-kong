@@ -32,15 +32,13 @@ def execute_test(site, test):
     import twill.commands as commands
     SITE = Site.objects.get_current()
     now = datetime.datetime.now()
-    #TODO: USE LOGGING
-    #Make mod_wsgi happy with no stdout...
-    #print "trying %s on %s" % (test, site)
+    print "trying %s on %s" % (test, site)
     twill_script = test.render(site)
     content = ''
     old_io = sys.stdout
     old_err = sys.stderr
     new_io = StringIO.StringIO()
-    sys.stdout = new_io
+    #sys.stdout = new_io
     commands.ERR = new_io
     try:
         execute_string(twill_script)
@@ -95,7 +93,7 @@ def run_test_for_type(type, test):
     return all_passed
 
 def run_tests_for_site(site):
-    #print "Running all tests for site: %s" % site
+    print "Running all tests for site: %s" % site
     all_passed = True
     for test in site.tests.all():
         passed = execute_test(site, test)
@@ -114,7 +112,7 @@ def run_tests_for_box(box):
     return all_passed
 
 def run_test(test):
-    #print "Running all tests for %s" % test
+    print "Running all tests for %s" % test
     sites = test.sites.all()
     types = test.types.all()
     all_passed = True

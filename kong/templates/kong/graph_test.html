@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+Results for {{ test }}
+{% endblock %}
+
+{% block content %}
+{% load kong_tags %}
+
+<div class="sites">
+<h1> {{ test }} </h1>
+  {% for site in sites %}
+  <div class="site">
+      <h3> {{ site.slug }} </h3>
+      <div class="placeholder" id="placeholder-{{ site.slug }}" style="position:relative; width:640px; height:280px;"></div>
+  </div>
+  {% endfor %}
+</div>
+
+
+<script type="text/javascript">
+{% for site_test_slug, results in flot_list.items %}
+$(function () {
+    var data = [ {{ results }} ]
+
+    var options = {
+        label: '{{ result.test.name }}',
+        points: { show: true },
+        lines: { show: true },
+        xaxis: { mode: "time" },
+        yaxis: { min: 0, max: 1000 },
+        selection: { mode: "x" },
+        grid: { hoverable: true, clickable: true },
+    };
+
+    var plot = $.plot($("#placeholder-{{ site_test_slug }}"), data , options );
+
+    function showTooltip(x, y, contents, id) {
+        $('<div id="' + id + '">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '2px',
+            'background-color': '#fee',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+
+    var previousPoint = null;
+    $("#placeholder-{{ site_test_slug }}").bind("plothover", function (event, pos, item) {
+
+        if (item) {
+            if (previousPoint != item.datapoint) {
+                previousPoint = item.datapoint;
+
+                $("#tooltip").remove();
+                var x = item.datapoint[0].toFixed(2),
+                    y = item.datapoint[1].toFixed(2);
+	        var d = new Date();
+	        d.setTime(x);
+
+                showTooltip(item.pageX, item.pageY, d.toLocaleString() + " : " + y, 'tooltip');
+            }
+        }
+        else {
+            $("#tooltip").remove();
+            previousPoint = null;
+        }
+    });
+});
+{% endfor %}
+</script>
+{% endblock %}
+

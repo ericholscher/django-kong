@@ -44,6 +44,9 @@
   {% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
+<a href="{% url kong_index %}">Home</a> | 
+<a href="{% url kong_dashboard %}">Dashboard</a> | 
+<a href="{% url kong_failed %}">Failed</a>
 {% block content %}
 {% endblock %}
 </body>

@@ -7,11 +7,50 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.views.generic import list_detail
 import calendar
+import itertools
+
+def split_seq(iterable, size):
+    it = iter(iterable)
+    item = list(itertools.islice(it, size))
+    while item:
+        yield item
+        item = list(itertools.islice(it, size))
+
 
 def get_timestamp(time):
     #return calendar.timegm(time.timetuple()) / 100
     #Need this for flot timestamps..
     return calendar.timegm(time.timetuple()) * 1000
+
+def graph_test(request, test_slug, num_total=5000, div_by=50):
+    ret_val = {}
+    flot_val = {}
+    num_split = int(num_total)/int(div_by)
+    test = Test.objects.get(slug=test_slug)
+    sites = set(list(test.sites.all()))
+    types = test.types.all()
+    for type in types:
+        for site in type.sites.all():
+            sites.add(site)
+    for site in sites:
+        flot_val[site.slug] = []
+        results = get_latest_results(site)
+        if ret_val.has_key(site.slug):
+            ret_val[site.slug].extend(results)
+        else:
+            ret_val[site.slug] = results
+        tests = TestResult.objects.filter(test=test, site=site)[:num_total]
+        duration_tests = list(tests)
+        duration_tests.reverse()
+        for result_list in split_seq(duration_tests, num_split):
+            time = sum([result.duration/1000 for result in result_list])/len(result_list)
+            flot_val[site.slug].append([get_timestamp(result_list[0].run_date), time])
+    return render_to_response('kong/graph_test.html',
+                              {'sites': list(sites),
+                               'flot_list': flot_val,
+                                'test': test,
+                              },
+                              context_instance=RequestContext(request))
 
 def index(request):
     ret_val = {}
@@ -86,3 +125,11 @@ def site_object(request, site):
                        {'results': ret_val},
                        context_instance=RequestContext(request))
 
+def failed(request):
+    ret_val = {}
+    flot_val = {}
+    results = list(TestResult.objects.filter(succeeded=False)[:20])
+    return render_to_response('kong/failed.html',
+                       {'results': results,
+                        'flot_list': flot_val},
+                       context_instance=RequestContext(request))
