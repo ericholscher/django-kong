@@ -30,7 +30,7 @@ class Site(models.Model):
     type = models.ForeignKey('Type', related_name='sites')
     client = models.ForeignKey(Client, related_name='sites', blank=True, null=True)
 
-    settings = models.CharField(max_length=80)
+    settings = models.CharField(max_length=80, default='settings')
     pythonpath = models.CharField(max_length=255,
                                   default="/home/code.django-1.0")
     #aliases = models.ForeignKey('Alias')
