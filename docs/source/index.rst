@@ -4,7 +4,7 @@ Welcome to Django Kong's documentation!
 A simple example
 -----------------
 
-You can see a `basic version <http://kong.ericholscher.com>`_ running for my personal site. It is super barebones, but it should give you an idea of what exactly is possible.
+You can see a `basic version <http://golem.ericholscher.com/kong/>`_ running for my personal site. It is super barebones, but it should give you an idea of what exactly is possible.
 
 Get the code
 -------------
