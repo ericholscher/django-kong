@@ -37,7 +37,7 @@ class Site(models.Model):
         defined for a site.
         """
         ret_val = []
-        for test in self.tests:
+        for test in self.tests.all():
             try:
                 latest_result = test.test_results.filter(site=self)[0]
                 ret_val.append(latest_result)
