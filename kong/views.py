@@ -23,7 +23,6 @@ def _render_to_result_list(request, sites, template_name='kong/index.html'):
                         'flot_list': flot_val},
                        context_instance=RequestContext(request))
 
-
 def split_seq(iterable, size):
     it = iter(iterable)
     item = list(itertools.islice(it, size))
@@ -56,17 +55,6 @@ def graphify(sites, test, num_total, div_by):
     return flot_val
 
 
-def graph_test(request, test_slug, num_total=5000, div_by=50):
-    test = Test.objects.get(slug=test_slug)
-    sites = test.all_sites.all()
-    flot_val = graphify(sites, test, num_total, div_by)
-    return render_to_response('kong/graph_test.html',
-                              {'sites': list(sites),
-                               'flot_list': flot_val.items(),
-                                'test': test,
-                              },
-                              context_instance=RequestContext(request))
-
 def index(request):
     sites = Site.objects.all()
     return _render_to_result_list(request, sites)
@@ -97,6 +85,19 @@ def run_test_on_site(request, site_slug, test_slug):
     site = Site.objects.get(slug=site_slug)
     execute_test(site, test)
     return test_object_for_site(request, test_slug, site_slug)
+
+
+def graph_test(request, test_slug, num_total=5000, div_by=50):
+    test = Test.objects.get(slug=test_slug)
+    sites = test.all_sites.all()
+    flot_val = graphify(sites, test, num_total, div_by)
+    return render_to_response('kong/graph_test.html',
+                              {'sites': list(sites),
+                               'flot_list': flot_val.items(),
+                                'test': test,
+                              },
+                              context_instance=RequestContext(request))
+
 
 
 def dashboard(request):
