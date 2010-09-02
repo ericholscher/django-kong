@@ -107,7 +107,7 @@ def test_detail_for_site(request, site_slug, test_slug):
     site = Site.objects.get(slug=site_slug)
     result = TestResult.objects.filter(test=test, site=site)[0]
     flot_list = flotify(result)
-    return render_to_response('kong/testresult_for_site.html',
+    return render_to_response('kong/test_list_for_site.html',
                        {'result': result,
                         'flot_list': flot_list
                         },
