@@ -16,8 +16,6 @@ class SanitizeTest(TestCase):
     def test_results(self):
         self.assertEqual(str(self.site.latest_results()), '[<TestResult: Front Page for ljworld: www2.ljworld.com>]')
 
-
     def test_execution(self):
         result = execute_test(self.site, self.test)
         self.assertTrue(result)
-        #import ipdb; ipdb.set_trace()

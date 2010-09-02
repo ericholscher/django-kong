@@ -46,7 +46,6 @@ class Site(models.Model):
                 pass
         return ret_val
 
-
 class Type(models.Model):
     name = models.CharField(max_length=40)
     slug = models.SlugField(blank=True)

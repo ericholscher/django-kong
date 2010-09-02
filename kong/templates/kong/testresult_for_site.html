@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}
-Results for {{ results.0.test }}
+Results for {{ result }}
 {% endblock %}
 
 {% block content %}
 {% load kong_tags %}
-{% with results.0 as result %}
 <h1> {{ result.test }} </h1>
 {% if result.site.name %}
 <h2> {{ result.site.name }} </h2>
@@ -18,7 +17,7 @@ Results for {{ results.0.test }}
 <div class="sites">
 <div class="site">
     <p>
-        <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
+    <a href="{% url kong_test_detail result.test.slug result.pk %}" class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
             <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
             <small>run at {{ result.run_date|date:"g:iA"|lower }}</small>
             <small>Duration (ms) {{ result.duration|micro_to_milli }}</small>
@@ -150,6 +149,5 @@ $(function () {
 {% endchart %}
 {% endcomment %}
 
-{% endwith %}
 {% endblock %}
 
