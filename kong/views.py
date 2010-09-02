@@ -84,7 +84,7 @@ def run_test_on_site(request, site_slug, test_slug):
     test = Test.objects.get(slug=test_slug)
     site = Site.objects.get(slug=site_slug)
     execute_test(site, test)
-    return test_object_for_site(request, test_slug, site_slug)
+    return test_detail_for_site(request, site_slug, test_slug)
 
 
 def graph_test(request, test_slug, num_total=5000, div_by=50):

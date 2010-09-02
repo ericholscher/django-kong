@@ -49,6 +49,5 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.humanize',
     'kong',
-    'south'
 )
 

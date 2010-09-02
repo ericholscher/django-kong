@@ -12,7 +12,7 @@ Results for {{ result }}
 {% else %}
 <h2> {{ result.site.slug }} </h2>
 {% endif %}
-<h5> <a href="run/">Run This Test</a> </h5>
+<h5> <a href="{% url kong_run_test_on_site result.site.slug result.test.slug %}">Run This Test</a> </h5>
 
 <div class="sites">
 <div class="site">

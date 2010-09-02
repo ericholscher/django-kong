@@ -11,7 +11,7 @@ urlpatterns = patterns('',
      url(r'failed/$', 'kong.views.failed', name='kong_failed'),
      url(r'dashboard/$', 'kong.views.dashboard', name='kong_dashboard'),
 
-     url(r'^sites/(?P<site_slug>.*?)/(?P<test_slug>.*?)/run/',
+     url(r'^sites/(?P<site_slug>.*?)/(?P<test_slug>.*?)/run/$',
          'kong.views.run_test_on_site',
          name='kong_run_test_on_site'
          ),
