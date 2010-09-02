@@ -1,7 +1,7 @@
 # Create your views here.
 
 from kong.models import TestResult, Test
-from kong.utils import get_latest_results, execute_test
+from kong.utils import execute_test
 from kong.models import Site, Type
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
@@ -34,7 +34,7 @@ def graph_test(request, test_slug, num_total=5000, div_by=50):
             sites.add(site)
     for site in sites:
         flot_val[site.slug] = []
-        results = get_latest_results(site)
+        results = site.latest_results
         if ret_val.has_key(site.slug):
             ret_val[site.slug].extend(results)
         else:
@@ -56,7 +56,7 @@ def index(request):
     ret_val = {}
     flot_val = {}
     for site in Site.objects.all():
-        results = get_latest_results(site)
+        results = site.latest_results
         if ret_val.has_key(site.slug):
             ret_val[site.slug].extend(results)
         else:
@@ -74,7 +74,7 @@ def dashboard(request):
     ret_val = {}
     flot_val = {}
     for site in Site.objects.all():
-        results = get_latest_results(site)
+        results = site.latest_results
         succ = True
         for result in results:
             if not result.succeeded:
@@ -115,7 +115,7 @@ def site_object(request, site):
     ret_val = {}
     sites = Site.objects.filter(slug=site)
     for site in sites:
-        results = get_latest_results(site)
+        results = site.latest_results
         if ret_val.has_key(site.slug):
             ret_val[site.slug].extend(results)
         else:

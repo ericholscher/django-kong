@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from kong.models import Test
-from kong.models import Site, Type 
+from kong.models import Site, Type
 from kong.utils import run_test, run_tests_for_type, run_tests_for_site, run_tests_for_box
 from optparse import OptionParser, make_option
 
@@ -16,7 +16,6 @@ class Command(BaseCommand):
         TEST = options.get('test')
         SITE = options.get('site')
         TYPE = options.get('type')
-        BOX = options.get('box')
         LIST = options.get('list')
 
         passed =  True

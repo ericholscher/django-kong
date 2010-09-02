@@ -12,22 +12,6 @@ from twill.parse import execute_string
 from twill.errors import TwillAssertionError
 
 
-def get_latest_results(site):
-    """
-    This function returns a list of the latest testresult for each test
-    defined for a site.
-    """
-    ret_val = []
-    tests = Test.objects.filter(sites=site) | Test.objects.filter(types=site.type)
-    for test in tests:
-        try:
-            result = test.test_results.filter(site=site)[0]
-            ret_val.append(result)
-        except IndexError:
-            #No result for test
-            pass
-    return ret_val
-
 def execute_test(site, test):
     import twill.commands as commands
     SITE = Site.objects.get_current()

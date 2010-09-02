@@ -31,6 +31,21 @@ class Site(models.Model):
     def tests(self):
         return Test.objects.filter(sites=self) | Test.objects.filter(types=self.type)
 
+    def latest_results(self):
+        """
+        This returns a list of the latest testresult for each test
+        defined for a site.
+        """
+        ret_val = []
+        for test in self.tests:
+            try:
+                latest_result = test.test_results.filter(site=self)[0]
+                ret_val.append(latest_result)
+            except IndexError:
+                #No result for test
+                pass
+        return ret_val
+
 
 class Type(models.Model):
     name = models.CharField(max_length=40)
