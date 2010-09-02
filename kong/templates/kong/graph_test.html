@@ -19,7 +19,7 @@ Results for {{ test }}
 
 
 <script type="text/javascript">
-{% for site_test_slug, results in flot_list.items %}
+{% for site_test_slug, results in flot_list %}
 $(function () {
     var data = [ {{ results }} ]
 

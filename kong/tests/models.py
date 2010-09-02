@@ -19,3 +19,6 @@ class SanitizeTest(TestCase):
     def test_execution(self):
         result = execute_test(self.site, self.test)
         self.assertTrue(result)
+
+    def test_results(self):
+        self.assertEqual(str(self.test.all_sites), '[<Site: ljworld: www2.ljworld.com>]')

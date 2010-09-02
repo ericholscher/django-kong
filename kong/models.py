@@ -73,6 +73,10 @@ class Test(models.Model):
     def get_absolute_url(self):
         return ('kong_testresults_detail', [self.slug])
 
+    @property
+    def all_sites(self):
+        return self.sites.all() | Site.objects.filter(type__in=self.types.all())
+
 
 class TestResult(models.Model):
     test = models.ForeignKey(Test, related_name='test_results')
