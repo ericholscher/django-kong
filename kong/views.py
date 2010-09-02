@@ -2,7 +2,7 @@
 
 from kong.models import TestResult, Test
 from kong.utils import get_latest_results, execute_test
-from kong.models import Site, Type, Server
+from kong.models import Site, Type
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.views.generic import list_detail
