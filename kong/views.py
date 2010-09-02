@@ -1,13 +1,14 @@
-# Create your views here.
+import calendar
+from collections import defaultdict
+import itertools
+
+from django.shortcuts import render_to_response
+from django.template.context import RequestContext
+from django.views.generic import list_detail
 
 from kong.models import TestResult, Test
 from kong.utils import execute_test
 from kong.models import Site, Type
-from django.shortcuts import render_to_response
-from django.template.context import RequestContext
-from django.views.generic import list_detail
-import calendar
-import itertools
 
 def split_seq(iterable, size):
     it = iter(iterable)
@@ -34,7 +35,7 @@ def graph_test(request, test_slug, num_total=5000, div_by=50):
             sites.add(site)
     for site in sites:
         flot_val[site.slug] = []
-        results = site.latest_results
+        results = site.latest_results()
         if ret_val.has_key(site.slug):
             ret_val[site.slug].extend(results)
         else:
@@ -52,21 +53,24 @@ def graph_test(request, test_slug, num_total=5000, div_by=50):
                               },
                               context_instance=RequestContext(request))
 
+def flotify(result):
+    results = list(TestResult.objects.filter(test=result.test, site=result.site)[:50])
+    results.reverse()
+    return [[get_timestamp(result.run_date), result.duration/1000] for result in results]
+
 def index(request):
-    ret_val = {}
     flot_val = {}
+    ret_val = defaultdict(list)
     for site in Site.objects.all():
-        results = site.latest_results
-        if ret_val.has_key(site.slug):
-            ret_val[site.slug].extend(results)
-        else:
-            ret_val[site.slug] = results
+        results = site.latest_results()
+        print site
+        print results
+        ret_val[site.slug].extend(results)
         for result in results:
-            results = list(TestResult.objects.filter(test=result.test, site=result.site)[:50])
-            results.reverse()
-            flot_val["%s-%s" % (result.site.slug, result.test.slug)] = [[get_timestamp(result.run_date), result.duration/1000] for result in results]
+            flot_val["%s-%s" % (result.site.slug, result.test.slug)] = flotify(result)
+    #import ipdb; ipdb.set_trace()
     return render_to_response('kong/index.html',
-                       {'results': ret_val,
+                       {'results': ret_val.items(),
                         'flot_list': flot_val},
                        context_instance=RequestContext(request))
 
@@ -74,7 +78,7 @@ def dashboard(request):
     ret_val = {}
     flot_val = {}
     for site in Site.objects.all():
-        results = site.latest_results
+        results = site.latest_results()
         succ = True
         for result in results:
             if not result.succeeded:
@@ -115,7 +119,7 @@ def site_object(request, site):
     ret_val = {}
     sites = Site.objects.filter(slug=site)
     for site in sites:
-        results = site.latest_results
+        results = site.latest_results()
         if ret_val.has_key(site.slug):
             ret_val[site.slug].extend(results)
         else:
