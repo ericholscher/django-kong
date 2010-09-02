@@ -16,6 +16,7 @@ Results for {{ result }}
 
 <div class="sites">
 <div class="site">
+    <h3> Latest Run </h3>
     <p>
     <a href="{% url kong_test_detail result.test.slug result.pk %}" class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
             <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
@@ -117,8 +118,8 @@ $(function () {
         }
     });
 
-    
-    // This would allow you to click a spot and have the 
+
+    // This would allow you to click a spot and have the
     // number stay, but it stays on zooming and looks odd.
     /*
     $("#placeholder").bind("plotclick", function (event, pos, item) {
@@ -150,4 +151,3 @@ $(function () {
 {% endcomment %}
 
 {% endblock %}
-

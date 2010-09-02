@@ -12,7 +12,7 @@
 {{ result.site.slug }} : {{ result.test }}
  </h3>
     <p>
-      <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{% url kong_testresult_for_site result.test.slug result.site.slug %}" title="{{ result.site.url }}">
+      <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" href="{% url kong_testresult_for_site result.site.slug result.test.slug %}" title="{{ result.site.url }}">
         <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
         <small><em>{{ result.test.name }}</em> | {{ result.run_date|timesince }} ago</small>
         <small>Duration (ms): {{ result.duration|micro_to_milli }}</small>
