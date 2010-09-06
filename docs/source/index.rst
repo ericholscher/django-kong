@@ -9,7 +9,7 @@ You can see a `basic version <http://golem.ericholscher.com/kong/>`_ running for
 Get the code
 -------------
 
-The `source <http://github.com/ericholscher/django-kong>`_ is available on Github. A 0.1 release will be uploaded to Pypi soon, after a few of the blemishes have been worked out. I would like to thank `Nathan Borror <http://nathanborror.com>`_ for the design parts that are pretty :)
+The `source <http://github.com/ericholscher/django-kong>`_ is available on Github. I would like to thank `Nathan Borror <http://nathanborror.com>`_ for the design parts that are pretty :)
 
 
 Contents
