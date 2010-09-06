@@ -8,14 +8,27 @@ urlpatterns = patterns('',
      (r'^admin/', include(admin.site.urls)),
      url(r'^$', 'kong.views.index', name='kong_index'),
      url(r'index/$', 'kong.views.index', name='kong_index'),
-     url(r'^test/(?P<test_slug>.*?)/(?P<num_total>\d+)/(?P<div_by>\d+)/',
-         'kong.views.graph_test', name='kong_test'),
      url(r'failed/$', 'kong.views.failed', name='kong_failed'),
      url(r'dashboard/$', 'kong.views.dashboard', name='kong_dashboard'),
-     url(r'^tests/(?P<test_slug>.*?)/(?P<site_slug>.*?)/run/', 'kong.views.run_test_on_site', name='kong_run_test_on_site'),
-     url(r'^tests/(?P<test_slug>.*?)/(?P<site_slug>.*?)/', 'kong.views.test_object_for_site', name='kong_testresult_for_site'),
-     url(r'^sites/(?P<site>.*?)/', 'kong.views.site_object', name='kong_site_detail'),
-     url(r'^sites/', 'kong.views.site_list', name='kong_site_list'),
 
-
+     url(r'^sites/(?P<site_slug>.*?)/(?P<test_slug>.*?)/run/$',
+         'kong.views.run_test_on_site',
+         name='kong_run_test_on_site'
+         ),
+     url(r'^sites/(?P<site_slug>.*?)/(?P<test_slug>.*?)/',
+         'kong.views.test_detail_for_site',
+         name='kong_testresult_for_site'
+         ),
+     url(r'^sites/(?P<site_slug>.*?)/',
+         'kong.views.site_detail',
+         name='kong_site_detail'
+         ),
+     url(r'^tests/(?P<test_slug>.*?)/(?P<num_total>\d+)/(?P<div_by>\d+)/',
+         'kong.views.graph_test',
+         name='kong_graph_test'
+         ),
+     url(r'^tests/(?P<test_slug>.*?)/(?P<pk>\d+)/',
+         'kong.views.test_detail',
+         name='kong_test_detail'
+         ),
 )

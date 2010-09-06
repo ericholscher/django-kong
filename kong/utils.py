@@ -11,57 +11,39 @@ from kong.models import Test, TestResult
 from twill.parse import execute_string
 from twill.errors import TwillAssertionError
 
-
-def get_latest_results(site):
-    """
-    This function returns a list of the latest testresult for each test
-    defined for a site.
-    """
-    ret_val = []
-    tests = Test.objects.filter(sites=site) | Test.objects.filter(types=site.type)
-    for test in tests:
-        try:
-            result = test.test_results.filter(site=site)[0]
-            ret_val.append(result)
-        except IndexError:
-            #No result for test
-            pass
-    return ret_val
+def _send_error(kong_site, test, content):
+    real_site = Site.objects.get_current()
+    message = render_to_string('kong/failed_email.txt', {'kong_site': kong_site,
+                                                         'test': test,
+                                                         'error': content,
+                                                         'real_site': real_site})
+    if getattr(settings, 'KONG_MAIL_MANAGERS', False):
+        mail_managers('Kong Test Failed: %s (%s)' % (test, kong_site), message)
+    if getattr(settings, 'KONG_MAIL_ADMINS', False):
+        mail_admins('Kong Test Failed: %s (%s)' % (test, kong_site), message)
 
 def execute_test(site, test):
     import twill.commands as commands
-    SITE = Site.objects.get_current()
-    now = datetime.datetime.now()
-    print "trying %s on %s" % (test, site)
     twill_script = test.render(site)
     content = ''
-    old_io = sys.stdout
     old_err = sys.stderr
-    new_io = StringIO.StringIO()
-    #sys.stdout = new_io
-    commands.ERR = new_io
+    new_err = StringIO.StringIO()
+    commands.ERR = new_err
+
+    now = datetime.datetime.now()
     try:
         execute_string(twill_script)
         succeeded = True
-        content = new_io.getvalue().strip()
+        content = new_err.getvalue().strip()
     except Exception, e:
         succeeded = False
-        content = new_io.getvalue().strip() + "\n\nException:\n\n" + str(e)
-        message = render_to_string('kong/failed_email.txt', {'site': site,
-                                                             'test': test,
-                                                             'error': content,
-                                                             'url': SITE.domain})
-        if hasattr(settings, 'KONG_MAIL_MANAGERS'):
-            mail_managers('Kong Test Failed: %s (%s)' % (test, site), message)
-        if hasattr(settings, 'KONG_MAIL_ADMINS'):
-            mail_admins('Kong Test Failed: %s (%s)' % (test, site), message)
+        content = new_err.getvalue().strip() + "\n\nException:\n\n" + str(e)
+        _send_error(site, test, content)
 
-    sys.stdout = old_io
-    commands.ERR = old_err
     end = datetime.datetime.now()
     duration = end - now
     duration = duration.microseconds
-
+    commands.ERR = old_err
     TestResult.objects.create(site=site,
                               test=test,
                               succeeded=succeeded,

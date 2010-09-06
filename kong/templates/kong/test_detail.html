@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+Results for {{ result }}
+{% endblock %}
+
+{% block content %}
+{% load kong_tags %}
+<h1> {{ result.test }} </h1>
+{% if result.site.name %}
+<h2> {{ result.site.name }} </h2>
+{% else %}
+<h2> {{ result.site.slug }} </h2>
+{% endif %}
+
+<div class="sites">
+<div class="site">
+    <p>
+    <a class="{{ result.succeeded|yesno:"passed,succeeded" }}" title="{{ result.site.url }}">
+            <strong>{{ result.succeeded|yesno:"PASSED,FAILED" }}</strong>
+            <small>run {{ result.run_date|timesince }} ago </small>
+            <small>Duration (ms) {{ result.duration|micro_to_milli }}</small>
+        </a>
+    </p>
+{% if result.content %}
+<div class="test-content">
+<strong> Content </strong>
+<pre>
+{{ result.content }}
+</pre>
+</div>
+{% endif %}
+<div class="executed">
+<strong> Code Executed </strong>
+<pre>
+{{ result|render_twill|urlize }}
+</pre>
+</div>
+</div>
+
+{% endblock %}

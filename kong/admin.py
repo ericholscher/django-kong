@@ -1,51 +1,34 @@
 from django.contrib import admin
-from kong.models import Test, TestResult, Client, HostedSite, Server, DeployTarget, Type
+from kong.models import Test, TestResult, Site, Type
 
 class TestResultAdmin(admin.ModelAdmin):
     search_fields = ('content', 'site__slug')
     list_filter = ('succeeded',)
     list_display = ('test', 'site', 'run_date', 'succeeded')
 
-class HostedSiteInline(admin.TabularInline):
-    fields = ('slug', 'settings', 'is_live', 'on_servers', 'servername')
-    model = HostedSite
-
-class DeployTargetAdmin(admin.ModelAdmin):
-    pass
-
-class ClientAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
-    inlines = [
-        HostedSiteInline,
-    ]
-
-class SiteAdmin(admin.ModelAdmin):
+class SiteInline(admin.TabularInline):
+    fields = ('slug', 'is_live', 'servername')
     list_filter = ('is_live',)
+    model = Site
 
 class TestAdmin(admin.ModelAdmin):
     search_fields = ('site', 'test')
     prepopulated_fields = {"slug": ("name",)}
     save_as = True
 
-class HostedSiteAdmin(SiteAdmin):
+class SiteAdmin(admin.ModelAdmin):
     search_fields = ('servername',)
-    list_display = ('servername', 'slug', 'type', 'client')
-    prepopulated_fields = {"slug": ("name",)}
-
-class ServerAdmin(admin.ModelAdmin):
+    list_display = ('servername', 'slug', 'type')
     prepopulated_fields = {"slug": ("name",)}
 
 class TypeAdmin(admin.ModelAdmin):
     search_fields = ('slug', 'name')
     prepopulated_fields = {"slug": ("name",)}
     inlines = [
-        HostedSiteInline,
+        SiteInline,
     ]
 
-admin.site.register(Client, ClientAdmin)
-admin.site.register(HostedSite, HostedSiteAdmin)
-admin.site.register(Server, ServerAdmin)
-admin.site.register(DeployTarget, DeployTargetAdmin)
+admin.site.register(Site, SiteAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Test, TestAdmin)
 admin.site.register(TestResult, TestResultAdmin)

@@ -1,8 +1,8 @@
 Your test {{ test.name }} has failed.
 
-It was running against the site {{ site.name }}.
+It was running against the site {{ kong_site.name }}.
 
-Check it out here: http://{{ url }}{% url kong_testresult_for_site test.slug site.slug %}
+Check it out here: http://{{ real_site.domain }}{% url kong_test_detail test.slug test.pk %}
 
 The error generated was:
 {{ error }}
