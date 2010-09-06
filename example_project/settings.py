@@ -51,3 +51,5 @@ INSTALLED_APPS = (
     'kong',
 )
 
+
+RUN_ONLINE_TESTS = True

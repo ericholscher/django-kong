@@ -29,6 +29,7 @@ class SanitizeTest(TestCase):
     def test_execution(self):
         if getattr(settings, 'RUN_ONLINE_TESTS', False):
             result = execute_test(self.site, self.test)
+            #If this fails because our sites are down, I'm sorry :D
             self.assertTrue(result)
         else:
-            print "Skipping online tests"
+            print "WARNING: Skipping online tests. Set RUN_ONLINE_TESTS to True in your settings to run them"
