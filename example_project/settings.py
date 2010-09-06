@@ -53,3 +53,10 @@ INSTALLED_APPS = (
 
 
 RUN_ONLINE_TESTS = True
+
+#Have local changes?
+try:
+    from local_settings import *
+except:
+    pass
+
