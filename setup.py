@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name = "django-kong",
-    version = "0.1",
+    version = "0.9",
     packages = [
         "kong",
         "kong.management",
@@ -18,6 +18,7 @@ setup(
         'kong': [
             'templates/*.html',
             'templates/kong/*.html',
+            'templates/kong/*.txt',
         ],
     },
 )
