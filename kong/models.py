@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.template import Template, Context
 from django.db.models import permalink
@@ -95,3 +96,32 @@ class TestResult(models.Model):
     @permalink
     def get_absolute_url(self):
         return ('kong_testresults_detail', [self.slug])
+    
+    def get_previous_results(self, num_results=1):
+        """
+        Returns X number of earlier test results for the same combination of test and site
+        """
+        return TestResult.objects.filter(
+            test=self.test, 
+            site=self.site, 
+            run_date__lt=self.run_date)[:num_results]
+    
+    @property
+    def failed(self):
+        return not self.succeeded
+    
+    @property
+    def notification_needed(self):
+        """
+        Checks whether result needs to be mailed to admins by checking:
+        1. If MAIL_ON_EVERY_FAILIRE is set to False don't send new notification
+           if previous test also failed
+        """
+        MAIL_ON_EVERY_FAILURE = getattr(settings, 'KONG_MAIL_ON_EVERY_FAILURE', False)
+        if self.failed:
+            if not MAIL_ON_EVERY_FAILURE:
+                previous_result = self.get_previous_results()
+                if previous_result and previous_result[0].failed:
+                    return False
+            return True
+        return False

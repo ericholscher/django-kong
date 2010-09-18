@@ -37,18 +37,20 @@ def execute_test(site, test):
         content = new_err.getvalue().strip()
     except Exception, e:
         succeeded = False
-        content = new_err.getvalue().strip() + "\n\nException:\n\n" + str(e)
-        _send_error(site, test, content)
+        content = new_err.getvalue().strip() + "\n\nException:\n\n" + str(e)        
 
     end = datetime.datetime.now()
     duration = end - now
     duration = duration.microseconds
     commands.ERR = old_err
-    TestResult.objects.create(site=site,
-                              test=test,
-                              succeeded=succeeded,
-                              duration=duration,
-                              content=content)
+    result = TestResult.objects.create(site=site,
+                                       test=test,
+                                       succeeded=succeeded,
+                                       duration=duration,
+                                       content=content)
+    if result.notification_needed:
+        _send_error(site, test, content)
+    
     return succeeded
 
 def run_tests_for_type(type):
