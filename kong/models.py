@@ -6,9 +6,7 @@ from django.contrib.localflavor.us import models as USmodels
 import datetime
 import urlparse
 
-MAIL_ON_EVERY_FAILURE = getattr(settings, 'KONG_MAIL_ON_EVERY_FAILURE', False)
-MAIL_ON_RECOVERY = getattr(settings, 'KONG_MAIL_ON_RECOVERY', True)
-CONSECUTIVE_FAILURES = getattr(settings, 'KONG_MAIL_ON_CONSECUTIVE_FAILURES', 1)
+
 
 class Site(models.Model):
     name = models.CharField(max_length=80, blank=True)
@@ -108,7 +106,7 @@ class TestResult(models.Model):
         return TestResult.objects.filter(
             test=self.test, 
             site=self.site, 
-            run_date__lt=self.run_date)[:num_results]
+            pk__lt=self.pk)[:num_results]
     
     @property
     def failed(self):
@@ -127,10 +125,16 @@ class TestResult(models.Model):
         4. If test succeeds and MAIL_ON_RECOVERY is set, 
            send recovery notification if previous test failed
         """
+        
+        MAIL_ON_EVERY_FAILURE = getattr(settings, 'KONG_MAIL_ON_EVERY_FAILURE', False)
+        MAIL_ON_RECOVERY = getattr(settings, 'KONG_MAIL_ON_RECOVERY', True)
+        CONSECUTIVE_FAILURES = getattr(settings, 'KONG_MAIL_ON_CONSECUTIVE_FAILURES', 1)
+        
         results = self.get_previous_results(CONSECUTIVE_FAILURES)
         results = [self.succeeded] + [result.succeeded for result in results]
         
         result_list = results[:CONSECUTIVE_FAILURES]
+        
         if True in result_list or len(result_list) < CONSECUTIVE_FAILURES:
             result_failed = False
         elif len:

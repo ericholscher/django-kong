@@ -33,3 +33,84 @@ class SanitizeTest(TestCase):
             self.assertTrue(result)
         else:
             print "WARNING: Skipping online tests. Set RUN_ONLINE_TESTS to True in your settings to run them"
+            
+class NotificationTest(TestCase):
+    
+    fixtures = ['test_data.json']
+    
+    def setUp(self):
+        self.test = Test.objects.get(slug='front-page')
+        self.site = self.test.sites.all()[0]   
+        
+        settings.KONG_MAIL_ON_EVERY_FAILURE = False
+        settings.KONG_MAIL_ON_RECOVERY = True
+        settings.KONG_MAIL_ON_CONSECUTIVE_FAILURES = 1
+    
+    def test_mail_on_every_failure(self):
+        
+        result = TestResult.objects.create(
+            site=self.site, 
+            test=self.test,
+            succeeded=False,
+            duration=1,
+            content='test'
+        )
+        self.assertEqual(result.notification_needed, True)
+        
+        result = TestResult.objects.create(
+            site=self.site, 
+            test=self.test,
+            succeeded=False,
+            duration=1,
+            content='test'
+        )
+        self.assertEqual(result.notification_needed, False)
+        
+        settings.KONG_MAIL_ON_EVERY_FAILURE = True
+        self.assertEqual(result.notification_needed, True)
+
+        
+    def test_mail_on_recovery(self):
+
+        result = TestResult.objects.create(
+            site=self.site, 
+            test=self.test,
+            succeeded=False,
+            duration=1,
+            content='test'
+        )
+        result = TestResult.objects.create(
+            site=self.site, 
+            test=self.test,
+            succeeded=True,
+            duration=1,
+            content='test'
+        )
+        self.assertEqual(result.notification_needed, True)
+        
+        settings.KONG_MAIL_ON_RECOVERY = False
+        self.assertEqual(result.notification_needed, False)
+        
+        
+    def test_consecutive_failures(self):
+        
+        result = TestResult.objects.create(
+            site=self.site, 
+            test=self.test,
+            succeeded=False,
+            duration=1,
+            content='test'
+        )        
+        self.assertEqual(result.notification_needed, True)
+        
+        settings.KONG_MAIL_ON_CONSECUTIVE_FAILURES = 2
+        self.assertEqual(result.notification_needed, False)
+
+        result = TestResult.objects.create(
+            site=self.site, 
+            test=self.test,
+            succeeded=False,
+            duration=1,
+            content='test'
+        )        
+        self.assertEqual(result.notification_needed, True)
