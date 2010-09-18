@@ -8,6 +8,7 @@ import urlparse
 
 MAIL_ON_EVERY_FAILURE = getattr(settings, 'KONG_MAIL_ON_EVERY_FAILURE', False)
 MAIL_ON_RECOVERY = getattr(settings, 'KONG_MAIL_ON_RECOVERY', True)
+CONSECUTIVE_FAILURES = getattr(settings, 'KONG_MAIL_ON_CONSECUTIVE_FAILURES', 1)
 
 class Site(models.Model):
     name = models.CharField(max_length=80, blank=True)
@@ -116,22 +117,37 @@ class TestResult(models.Model):
     @property
     def notification_needed(self):
         """
-        Checks whether result needs to be mailed to admins by checking:
-        1. If MAIL_ON_EVERY_FAILIRE is set to False don't send new notification
+        Checks whether result needs to be mailed to admins.
+        The procedure is as follows 
+        (taking into account min number of consecutive failures):
+        1. Find out whether current test failed 
+        2. Find out whether previous test failed
+        3. If MAIL_ON_EVERY_FAILURE is set to False don't send new notification
            if previous test also failed
-        2. If test succeeds and MAIL_ON_RECOVERY is set, 
-           send recovery notification if previous results failed
+        4. If test succeeds and MAIL_ON_RECOVERY is set, 
+           send recovery notification if previous test failed
         """
+        results = self.get_previous_results(CONSECUTIVE_FAILURES)
+        results = [self.succeeded] + [result.succeeded for result in results]
         
-        if self.failed:
-            if not MAIL_ON_EVERY_FAILURE:
-                previous_result = self.get_previous_results()
-                if previous_result and previous_result[0].failed:
-                    return False
+        result_list = results[:CONSECUTIVE_FAILURES]
+        if True in result_list or len(result_list) < CONSECUTIVE_FAILURES:
+            result_failed = False
+        elif len:
+            result_failed = True
+        
+        prev_results = results[1:]
+        if True in prev_results or len(prev_results) < CONSECUTIVE_FAILURES:
+            prev_result_failed = False
+        else:
+            prev_result_failed = True
+        
+        if result_failed:
+            if not MAIL_ON_EVERY_FAILURE and prev_result_failed:
+                return False
             return True
         else:
             if MAIL_ON_RECOVERY:
-                previous_result = self.get_previous_results()
-                if previous_result and previous_result[0].failed:
+                if prev_result_failed:
                     return True
         return False
