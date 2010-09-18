@@ -1,0 +1,12 @@
+Your test {{ test.name }} has recovered.
+
+It was running against the site {{ kong_site.name }}.
+
+Check it out here: http://{{ real_site.domain }}{% url kong_test_detail test.slug test.pk %}
+
+The latest result generated was:
+{{ content }}
+
+The test run was:
+
+{{ test.body }}

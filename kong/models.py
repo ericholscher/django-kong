@@ -6,6 +6,9 @@ from django.contrib.localflavor.us import models as USmodels
 import datetime
 import urlparse
 
+MAIL_ON_EVERY_FAILURE = getattr(settings, 'KONG_MAIL_ON_EVERY_FAILURE', False)
+MAIL_ON_RECOVERY = getattr(settings, 'KONG_MAIL_ON_RECOVERY', True)
+
 class Site(models.Model):
     name = models.CharField(max_length=80, blank=True)
     slug = models.SlugField()
@@ -116,12 +119,19 @@ class TestResult(models.Model):
         Checks whether result needs to be mailed to admins by checking:
         1. If MAIL_ON_EVERY_FAILIRE is set to False don't send new notification
            if previous test also failed
+        2. If test succeeds and MAIL_ON_RECOVERY is set, 
+           send recovery notification if previous results failed
         """
-        MAIL_ON_EVERY_FAILURE = getattr(settings, 'KONG_MAIL_ON_EVERY_FAILURE', False)
+        
         if self.failed:
             if not MAIL_ON_EVERY_FAILURE:
                 previous_result = self.get_previous_results()
                 if previous_result and previous_result[0].failed:
                     return False
             return True
+        else:
+            if MAIL_ON_RECOVERY:
+                previous_result = self.get_previous_results()
+                if previous_result and previous_result[0].failed:
+                    return True
         return False

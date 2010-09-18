@@ -22,6 +22,21 @@ def _send_error(kong_site, test, content):
     if getattr(settings, 'KONG_MAIL_ADMINS', False):
         mail_admins('Kong Test Failed: %s (%s)' % (test, kong_site), message)
 
+def _send_recovery(kong_site, test, content):
+    real_site = Site.objects.get_current()
+    message = render_to_string(
+        'kong/recovered_email.txt', {
+            'kong_site': kong_site, 
+            'test': test, 
+            'content': content, 
+            'real_site': real_site
+        }
+    )
+    if getattr(settings, 'KONG_MAIL_MANAGERS', False):
+        mail_managers('Kong Test Recovered: %s (%s)' % (test, kong_site), message)
+    if getattr(settings, 'KONG_MAIL_ADMINS', False):
+        mail_admins('Kong Test Recovered: %s (%s)' % (test, kong_site), message)
+
 def execute_test(site, test):
     import twill.commands as commands
     twill_script = test.render(site)
@@ -48,8 +63,11 @@ def execute_test(site, test):
                                        succeeded=succeeded,
                                        duration=duration,
                                        content=content)
-    if result.notification_needed:
+    
+    if result.notification_needed and result.failed:
         _send_error(site, test, content)
+    if result.notification_needed and result.succeeded:
+        _send_recovery(site, test, content)
     
     return succeeded
 
