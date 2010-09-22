@@ -21,6 +21,7 @@ Contents
 
    install
    tutorial
+   settings
    meta
 
 What's with the name?
