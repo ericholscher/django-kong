@@ -9,6 +9,7 @@ setup(
         "kong.management.commands",
         "kong.templatetags",
         "kong.tests",
+        "kong.fixtures",
     ],
     author = "Eric Holscher",
     author_email = "eric@ericholscher.com",
