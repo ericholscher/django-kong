@@ -19,8 +19,9 @@ Contents
    :maxdepth: 2
    :glob:
 
-   meta
+   install
    tutorial
+   meta
 
 What's with the name?
 ----------------------
