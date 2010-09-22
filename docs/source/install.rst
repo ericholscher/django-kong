@@ -35,3 +35,13 @@ Kong ships with an example project that should get you up and running quickly. T
 
 This will give you a locally running instance with a couple of example sites
 and an example test.
+
+Now that you have your tests in your database, you need to check that your
+tests run. You can run tests like::
+
+    ./manage.py check_sites -t front-page
+    ./manage.py check_sites -T mine
+
+These two different ways will run either a specific test, or a type of test.
+Both of these can run tests across multiple sites.
+    
