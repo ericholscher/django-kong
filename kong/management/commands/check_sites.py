@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from kong.models import Test
 from kong.models import Site, Type
-from kong.utils import run_test, run_tests_for_type, run_tests_for_site, run_tests_for_box
 from optparse import OptionParser, make_option
 
 
@@ -26,15 +25,15 @@ class Command(BaseCommand):
         if TEST:
             print "Running test: %s" % TEST
             test = Test.objects.get(slug=TEST)
-            passed = run_test(test)
+            passed = test.run_tests()
         elif TYPE:
             print "Running tests for type : %s" % TYPE
             type = Type.objects.get(slug=TYPE)
-            passed = run_tests_for_type(type)
+            passed = type.run_tests()
         elif SITE:
             print "Running tests for site : %s" % SITE
             site = Site.objects.get(slug=SITE)
-            passed = run_tests_for_site(site)
+            passed = site.run_tests()
         elif LIST:
             print "All Sites:"
             for site in Site.objects.all():
@@ -45,7 +44,7 @@ class Command(BaseCommand):
         else:
             print "Running tests for all sites"
             for site in Site.objects.all():
-                passed = run_tests_for_site(site)
+                passed = site.run_tests()
 
         if passed:
             return 0
