@@ -1,0 +1,16 @@
+
+define service{
+        use                             generic-service         ; Name of service template to use
+        ; Use your own host name.
+        ;host_name                       Golem
+        service_description             Run Kong
+        check_command                   run_kong
+        normal_check_interval           3
+        }
+
+#commands.cfg
+define command {
+    command_name run_kong
+    command_line $USER1$/run_kong
+}
+
