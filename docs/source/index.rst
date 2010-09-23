@@ -22,9 +22,9 @@ Contents
    :glob:
 
    install
-   tutorial
    management_commands
    settings
+   overview
    meta
 
 What's with the name?
