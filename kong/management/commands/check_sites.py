@@ -10,8 +10,8 @@ class Command(BaseCommand):
         make_option("-t", "--test", dest="test"),
         make_option("-s", "--site", dest="site"),
         make_option("-T", "--type", dest="type"),
-        make_option("-l", "--list", dest="list", action="store_true", default=False),
-        make_option("-a", "--all-sites", dest="all-sites", action="store_true"),
+        make_option("-l", "--list", dest="list",
+                    action="store_true", default=False),
     )
 
     def handle(self, *args, **options):
@@ -19,9 +19,8 @@ class Command(BaseCommand):
         SITE = options.get('site')
         TYPE = options.get('type')
         LIST = options.get('list')
-        ALL_SITES = options.get('all-sites')
-
         passed =  True
+
         if TEST:
             print "Running test: %s" % TEST
             test = Test.objects.get(slug=TEST)
@@ -46,6 +45,7 @@ class Command(BaseCommand):
             for site in Site.objects.all():
                 passed = site.run_tests()
 
+        #This is mainly for Nagios reporting.
         if passed:
             return 0
         else:

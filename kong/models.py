@@ -10,11 +10,11 @@ import datetime
 import urlparse
 
 
-
 class Site(models.Model):
     name = models.CharField(max_length=80, blank=True)
     slug = models.SlugField()
-    type = models.ForeignKey('Type', related_name='sites', null=True, blank=True)
+    type = models.ForeignKey('Type', related_name='sites',
+                             null=True, blank=True)
     servername = models.CharField(max_length=100, default='example.com',
                                   help_text='This is the address of your actual site')
     is_live = models.BooleanField(default=True)
@@ -59,6 +59,7 @@ class Site(models.Model):
             all_passed = passed and all_passed
         return all_passed
 
+
 class Type(models.Model):
     name = models.CharField(max_length=40)
     slug = models.SlugField(blank=True)
@@ -75,6 +76,7 @@ class Type(models.Model):
             passed = site.run_tests()
             all_passed = passed and all_passed
         return all_passed
+
 
 class Test(models.Model):
     name = models.CharField(max_length=250)
@@ -103,7 +105,6 @@ class Test(models.Model):
             passed = execute_test(site, self)
             all_passed = passed and all_passed
         return all_passed
-
 
 
 class TestResult(models.Model):

@@ -39,9 +39,14 @@ and an example test.
 Now that you have your tests in your database, you need to check that your
 tests run. You can run tests like::
 
+    #Check all sites
+    ./manage.py check_sites
+    #Only run the front page test
     ./manage.py check_sites -t front-page
+    #Only check sites of type Mine
     ./manage.py check_sites -T mine
 
-These two different ways will run either a specific test, or a type of test.
-Both of these can run tests across multiple sites.
+The first command is the default way of running kong, and will run the tests for all of your sites.
+
+The second two different ways will run either a specific test, or a type of test. Both of these can run tests across multiple sites.
     

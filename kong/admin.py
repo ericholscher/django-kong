@@ -9,6 +9,7 @@ class TestResultAdmin(admin.ModelAdmin):
 class SiteInline(admin.TabularInline):
     fields = ('slug', 'is_live', 'servername')
     list_filter = ('is_live',)
+    extra = 0
     model = Site
 
 class TestAdmin(admin.ModelAdmin):
