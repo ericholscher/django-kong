@@ -6,7 +6,7 @@ Kong ships with management commands that allows you to easily run your tests.  T
 check_sites
 -----------
 
-** By default, this runs tests for all your sites**
+**By default, this runs tests for all your sites**
 
 This is the main command that is used to run kong tests. By default, it does nothing, but you can pass in arguments to it, to make it do what you want.
 
