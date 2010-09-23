@@ -23,6 +23,7 @@ Contents
 
    install
    tutorial
+   management_commands
    settings
    meta
 
