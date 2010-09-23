@@ -9,8 +9,8 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = os.path.join(PROJECT_DIR, 'kong_db')             # Or path to database file if using sqlite3.
+DATABASE_ENGINE = 'sqlite3'
+DATABASE_NAME = os.path.join(PROJECT_DIR, 'kong_db')
 
 TIME_ZONE = 'America/Chicago'
 LANGUAGE_CODE = 'en-us'
@@ -24,13 +24,11 @@ SECRET_KEY = 'BZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
