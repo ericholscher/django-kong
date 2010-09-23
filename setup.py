@@ -20,6 +20,8 @@ setup(
             'templates/*.html',
             'templates/kong/*.html',
             'templates/kong/*.txt',
+            'fixtures/*.json',
+
         ],
     },
 )
