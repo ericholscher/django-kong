@@ -13,7 +13,6 @@ class Command(BaseCommand):
         make_option("-T", "--type", dest="type"),
         make_option("-l", "--list", dest="list", action="store_true", default=False),
         make_option("-a", "--all-sites", dest="all-sites", action="store_true"),
-        make_option("-A", "--all-types", dest="all-types", action="store_true"),
     )
 
     def handle(self, *args, **options):
@@ -22,7 +21,6 @@ class Command(BaseCommand):
         TYPE = options.get('type')
         LIST = options.get('list')
         ALL_SITES = options.get('all-sites')
-        ALL_TYPES = options.get('all-types')
 
         passed =  True
         if TEST:
@@ -44,15 +42,10 @@ class Command(BaseCommand):
             print "All Tests:"
             for test in Test.objects.all():
                 print test.slug
-        elif ALL_SITES:
+        else:
+            print "Running tests for all sites"
             for site in Site.objects.all():
                 passed = run_tests_for_site(site)
-        elif ALL_TYPES:
-            for type in Type.objects.all():
-                passed = run_tests_for_type(type)
-        else:
-            print "No action"
-            return 0
 
         if passed:
             return 0
