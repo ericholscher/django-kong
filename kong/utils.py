@@ -48,7 +48,10 @@ def execute_test(site, test):
 
     now = datetime.datetime.now()
     try:
-        execute_string(twill_script)
+        if getattr(settings, 'KONG_RESET_BROWSER', False):
+            execute_string(twill_script, no_reset = False)
+        else:
+            execute_string(twill_script)
         succeeded = True
         content = new_err.getvalue().strip()
     except Exception, e:

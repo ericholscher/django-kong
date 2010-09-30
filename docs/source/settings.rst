@@ -40,3 +40,9 @@ Default: 1
 
 When set to a value above ``1``, only send emails when a test has failed x number of times.
 
+KONG_RESET_BROWSER
+------------------
+
+Default: False
+
+When set to ``True``, the browser is reset between tests. This means in essence that all cookies are reset.
