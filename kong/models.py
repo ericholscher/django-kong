@@ -35,7 +35,10 @@ class Site(models.Model):
 
     @property
     def all_tests(self):
-        return Test.objects.filter(sites=self) | Test.objects.filter(types=self.type)
+        if self.type:
+            return Test.objects.filter(sites=self) | Test.objects.filter(types=self.type)
+        else:
+            return Test.objects.filter(sites=self)
 
     def latest_results(self):
         """
