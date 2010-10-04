@@ -26,6 +26,7 @@ Contents
    settings
    overview
    meta
+   roadmap
 
 What's with the name?
 ----------------------
