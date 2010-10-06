@@ -28,7 +28,7 @@ Kong ships with an example project that should get you up and running quickly. T
     pip install -r requirements.txt
     pip install . #Install Kong
     cd example_project
-    ./manage.py syncdb
+    ./manage.py syncdb --noinput
     ./manage.py loaddata test_data
     ./manage.py runserver
 
