@@ -104,7 +104,7 @@ class Test(models.Model):
 
     def run_tests(self):
         all_passed = True
-        for site in test.all_sites.all():
+        for site in self.all_sites.all():
             passed = execute_test(site, self)
             all_passed = passed and all_passed
         return all_passed
