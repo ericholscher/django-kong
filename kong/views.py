@@ -1,4 +1,5 @@
 import calendar
+from collections import defaultdict
 import itertools
 
 from django.shortcuts import render_to_response
@@ -10,12 +11,10 @@ from kong.utils import execute_test
 from kong.models import Site, Type
 
 def _render_to_result_list(request, sites, template_name='kong/index.html'):
-    ret_val = {}
+    ret_val = defaultdict(list)
     flot_val = {}
     for site in sites:
         results = site.latest_results()
-        if not site.slug in ret_val:
-            ret_val[site.slug] = [results]
         ret_val[site.slug].extend(results)
         for result in results:
             flot_val["%s-%s" % (result.site.slug, result.test.slug)] = flotify(result)
@@ -46,14 +45,12 @@ def flotify(result, num=50):
 
 def graphify(sites, test, num_total, div_by):
     num_split = int(num_total)/int(div_by)
-    flot_val = {}
+    flot_val = defaultdict(list)
     for site in sites:
         tests = list(TestResult.objects.filter(test=test, site=site)[:num_total])
         tests.reverse()
         for result_list in split_seq(tests, num_split):
             time = sum([result.duration/1000 for result in result_list])/len(result_list)
-            if site.slug not in flot_val:
-                flot_val[site.slug] = [get_timestamp(result_list[0].run_date), time]
             flot_val[site.slug].append([get_timestamp(result_list[0].run_date), time])
     return flot_val
 
