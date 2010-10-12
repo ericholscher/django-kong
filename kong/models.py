@@ -92,7 +92,7 @@ class Test(models.Model):
         return self.name
 
     def render(self, site):
-        return Template(self.body).render(Context({'site': site, 'test': self})).encode()
+        return Template(self.body).render(Context({'site': site, 'test': self})).encode('utf8')
 
     @permalink
     def get_absolute_url(self):
