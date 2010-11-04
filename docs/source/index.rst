@@ -13,6 +13,7 @@ Get the code
 
 The `source <http://github.com/ericholscher/django-kong>`_ is available on Github. I would like to thank `Nathan Borror <http://nathanborror.com>`_ for the design parts that are pretty :)
 
+The mailing list for the project is located at google groups: http://groups.google.com/group/django-testing
 
 Contents
 --------
