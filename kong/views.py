@@ -33,7 +33,7 @@ def split_seq(iterable, size):
 
 def get_timestamp(time):
     #Need this for flot timestamps..
-    return calendar.timegm(time.timetuple()) * 1000
+    return float(calendar.timegm(time.timetuple()) * 1000)
 
 def flotify(result, num=50):
     """
