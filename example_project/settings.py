@@ -51,6 +51,8 @@ INSTALLED_APPS = (
 
 
 KONG_RUN_ONLINE_TESTS = True
+KONG_MAIL_ADMINS = TRUE
+KONG_MAIL_ON_EVERY_FAILURE = True
 
 #Have local changes?
 try:
