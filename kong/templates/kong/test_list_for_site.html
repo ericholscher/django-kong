@@ -14,6 +14,8 @@ Results for {{ result }}
 {% endif %}
 <h5> <a href="{% url kong_run_test_on_site result.site.slug result.test.slug %}">Run This Test</a> </h5>
 
+<h5><a href="{% url kong_graph_test result.test.slug 500 50 %}">Graph Test</a></h5>
+
 <div class="sites">
 <div class="site">
     <h3> Latest Run </h3>
